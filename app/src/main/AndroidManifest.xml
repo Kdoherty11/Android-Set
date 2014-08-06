@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kdoherty.set" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.kdoherty.activities.HomeScreen"
+            android:label="@string/title_activity_home_screen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.kdoherty.activities.TimeScroller"
+            android:label="@string/title_activity_time_scroller"
+            android:parentActivityName="com.kdoherty.activities.HomeScreen" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.activities.HomeScreenActivity" />
+        </activity>
+        <activity
+            android:name="com.kdoherty.activities.TimedPractice"
+            android:label="@string/title_activity_timed_practice" >
+        </activity>
+        <activity
+            android:name="com.kdoherty.activities.GameOver"
+            android:label="@string/title_activity_game_over" >
+        </activity>
+        <activity
+            android:name="com.kdoherty.activities.Login"
+            android:label="@string/title_activity_login"
+            android:parentActivityName="com.kdoherty.activities.HomeScreen" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.activities.HomeScreen" />
+        </activity>
+        <activity
+            android:name="com.kdoherty.activities.SignUp"
+            android:label="@string/title_activity_sign_up" >
+        </activity>
+    </application>
+
+</manifest>

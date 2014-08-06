@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <Button
+        android:id="@+id/timed_practice_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/timed_practice_button"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/practice_button"
+        android:onClick="onTimedPracticeClick" />
+
+    <Button
+        android:id="@+id/practice_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/practice_button"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <Button
+        android:id="@+id/online_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/online_button"
+        android:layout_below="@+id/practice_button"
+        android:layout_centerHorizontal="true"
+        android:onClick="onOnlineClick"/>
+
+</RelativeLayout>
