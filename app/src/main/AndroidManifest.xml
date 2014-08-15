@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kdoherty.set" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -10,11 +12,6 @@
         <activity
             android:name="com.kdoherty.activities.HomeScreen"
             android:label="@string/title_activity_home_screen" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.kdoherty.activities.TimeScroller"
@@ -34,15 +31,30 @@
         </activity>
         <activity
             android:name="com.kdoherty.activities.Login"
-            android:label="@string/title_activity_login"
-            android:parentActivityName="com.kdoherty.activities.HomeScreen" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.kdoherty.activities.HomeScreen" />
+            android:label="@string/title_activity_login" >
+
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+
+
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
         <activity
             android:name="com.kdoherty.activities.SignUp"
             android:label="@string/title_activity_sign_up" >
+        </activity>
+        <activity
+            android:name="com.kdoherty.activities.Multiplayer"
+            android:label="@string/title_activity_multiplayer"
+            android:parentActivityName="com.kdoherty.activities.Login" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.activities.Login" />
+        </activity>
+        <activity
+            android:name="com.kdoherty.activities.Race"
+            android:label="@string/title_activity_race" >
         </activity>
     </application>
 
