@@ -1,10 +1,8 @@
 package com.kdoherty.activities;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -20,7 +18,11 @@ import java.util.Locale;
 public class Race extends AbstractSetActivity {
 
     private TextView mTimerView;
-    long ellapsedMillis = 0L;
+    private TextView score;
+
+    public static final String TIME_KEY = "time";
+
+    private int target;
 
     private Handler customHandler = new Handler();
 
@@ -28,14 +30,28 @@ public class Race extends AbstractSetActivity {
             Locale.getDefault());
     String startTimeStr = timeFormat.format(0);
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_race, R.color.WHITE);
-        initGridView(new Game());
+        initGameView(new Game());
         initTimer();
+        target = getIntent().getExtras().getInt(RaceSetup.TARGET_KEY);
+    }
 
+    @Override
+    protected void initGameView(Game game) {
+        super.initGameView(game);
+        score = (TextView) findViewById(R.id.score);
+        updateScore();
+    }
 
+    @Override
+    protected void posSetFound(List<Card> cards) {
+        super.posSetFound(cards);
+        updateScore();
+        if (mSetCount == target) {
+            finishGame();
+        }
     }
 
     private void initTimer() {
@@ -61,6 +77,9 @@ public class Race extends AbstractSetActivity {
         handler.post(task);
     }
 
+    void updateScore() {
+        score.setText("Score: " + mSetCount);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -84,7 +103,8 @@ public class Race extends AbstractSetActivity {
     @Override
     void finishGame() {
 
-        // pass time
-
+        Intent gameOver = new Intent(getApplicationContext(), GameOverRace.class);
+        gameOver.putExtra(TIME_KEY, mTimerView.getText().toString());
+        startActivity(gameOver);
     }
 }

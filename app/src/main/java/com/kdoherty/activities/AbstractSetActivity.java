@@ -1,7 +1,6 @@
 package com.kdoherty.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,10 +11,13 @@ import com.kdoherty.adapters.ImageAdapter;
 import com.kdoherty.model.Card;
 import com.kdoherty.model.Game;
 import com.kdoherty.model.Set;
+import com.kdoherty.model.SetSolver;
 import com.kdoherty.set.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import it.sephiroth.android.library.widget.HListView;
 
 /**
  * Created by kdoherty on 8/14/14.
@@ -24,6 +26,7 @@ public abstract class AbstractSetActivity extends Activity {
 
     /** UI Reference to the grid view holding the card images */
     protected GridView mGridView;
+    protected HListView playerList;
     /** Image adapter for card images */
     protected ImageAdapter mAdapter;
 
@@ -49,7 +52,7 @@ public abstract class AbstractSetActivity extends Activity {
     }
 
 
-    protected void initGridView(Game game) {
+    protected void initGameView(Game game) {
         this.game = game;
         mGridView = (GridView) findViewById(R.id.gridView);
         mAdapter = new ImageAdapter(this, game);
@@ -65,6 +68,11 @@ public abstract class AbstractSetActivity extends Activity {
             }
 
         });
+//        playerList = (HListView) findViewById(R.id.player_list);
+//        System.out.println("Got playerlist of " + playerList);
+//        PlayerAdapter playerAdapter = new PlayerAdapter(getApplicationContext(), game.getPlayers());
+//        playerList.setAdapter(playerAdapter);
+//        System.out.println("Created and set playerAdapter");
     }
 
     protected void addToPosSet(Card c, View view) {
@@ -96,7 +104,11 @@ public abstract class AbstractSetActivity extends Activity {
                     return;
                 } else {
                     game.deal(Set.SIZE);
+
                 }
+            }
+            while (SetSolver.findSet(game.getActiveCards()) == null) {
+                game.deal(Set.SIZE);
             }
             mAdapter.update();
         } else {

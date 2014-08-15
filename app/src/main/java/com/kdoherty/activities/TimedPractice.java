@@ -26,12 +26,30 @@ public class TimedPractice extends AbstractSetActivity {
     private TextView mTimerView;
     /** The time in milliseconds of how long the user has to find sets */
     private long mTime;
+    private TextView score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_timed_practice, R.color.WHITE);
         initTimer();
-        initGridView(new Game());
+        initGameView(new Game());
+    }
+
+    @Override
+    protected void initGameView(Game game) {
+        super.initGameView(game);
+        score = (TextView) findViewById(R.id.score);
+        updateScore();
+    }
+
+    void updateScore() {
+        score.setText("Score: " + mSetCount);
+    }
+
+    @Override
+    protected void posSetFound(List<Card> cards) {
+        super.posSetFound(cards);
+        updateScore();
     }
 
     private void initTimer() {
@@ -63,7 +81,7 @@ public class TimedPractice extends AbstractSetActivity {
 
     void finishGame() {
         Intent gameOver = new Intent(getApplicationContext(),
-                GameOver.class);
+                GameOverPractice.class);
         gameOver.putExtra("setCount", mSetCount);
         gameOver.putExtra("badSetCount", mBadSetCount);
         gameOver.putExtra("time", mTime);

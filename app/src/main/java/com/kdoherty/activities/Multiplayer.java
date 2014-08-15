@@ -73,32 +73,7 @@ public class Multiplayer extends AbstractSetActivity {
                 System.out.println("Success getting games " + games.getGames());
                 if (games.getGames().isEmpty()) {
                     System.out.println("Adding game and setting id");
-                    api.addGame(new Callback<Response>() {
-                        @Override
-                        public void success(Response response, Response response2) {
-                            String resp = getResponseStr(response);
-                            gameId = resp.substring(1, resp.length() - 1);
-                            System.out.println("Adding player " + Login.USERNAME + " to game " + gameId);
-                            api.addPlayer(gameId, Login.USERNAME, new Callback<Response>() {
-                                @Override
-                                public void success(Response response, Response response2) {
-                                    System.out.println("Success adding player");
-                                    updateContentFromServer();
-                                }
-
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    System.out.println("Failure adding player " + error.getMessage());
-                                }
-                            });
-
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            System.out.println("fail adding game here");
-                        }
-                    });
+                    addGameAndPlayer();
                 } else {
                     for (Game game : games.getGames()) {
                         if (game.isOpen() && !game.isStarted()) {
@@ -107,19 +82,23 @@ public class Multiplayer extends AbstractSetActivity {
                             break;
                         }
                     }
-                    System.out.println("Adding player to game " + gameId);
-                    api.addPlayer(gameId, Login.USERNAME, new Callback<Response>() {
-                        @Override
-                        public void success(Response response, Response response2) {
-                            System.out.println("Success adding player");
-                            updateContentFromServer();
-                        }
+                    if (gameId == null) {
+                        addGameAndPlayer();
+                    } else {
+                        System.out.println("Adding player to game " + gameId);
+                        api.addPlayer(gameId, Login.USERNAME, new Callback<Response>() {
+                            @Override
+                            public void success(Response response, Response response2) {
+                                System.out.println("Success adding player");
+                                updateContentFromServer();
+                            }
 
-                        @Override
-                        public void failure(RetrofitError error) {
-                            System.out.println("Failure adding player " + error.getMessage());
-                        }
-                    });
+                            @Override
+                            public void failure(RetrofitError error) {
+                                System.out.println("Failure adding player " + error.getMessage());
+                            }
+                        });
+                    }
                 }
             }
 
@@ -131,9 +110,39 @@ public class Multiplayer extends AbstractSetActivity {
 
     }
 
+    private void addGameAndPlayer() {
+        api.addGame(new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                String resp = getResponseStr(response);
+                gameId = resp.substring(1, resp.length() - 1);
+                System.out.println("Adding player " + Login.USERNAME + " to game " + gameId);
+                api.addPlayer(gameId, Login.USERNAME, new Callback<Response>() {
+                    @Override
+                    public void success(Response response, Response response2) {
+                        System.out.println("Success adding player");
+                        updateContentFromServer();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        System.out.println("Failure adding player " + error.getMessage());
+                    }
+                });
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                System.out.println("fail adding game here");
+            }
+        });
+    }
+
     private void initSocket() {
         try {
-            socket = new SocketIO("http://10.0.2.2:5000/");
+            String hostedSocked = SetApi.ENDPOINT + "/";
+            socket = new SocketIO(hostedSocked);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -220,23 +229,6 @@ public class Multiplayer extends AbstractSetActivity {
         });
     }
 
-    private void addGameAndSetId() {
-        api.addGame(new Callback<Response>() {
-            @Override
-            public void success(Response result, Response response2) {
-                //Try to get response body
-                gameId = getResponseStr(result);
-
-                System.out.println("Success adding game: " + gameId);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                System.out.println("Failure adding game " + error.getMessage());
-            }
-        });
-    }
-
     private void initApi() {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Card.class, new CardDeserializer())
@@ -256,7 +248,7 @@ public class Multiplayer extends AbstractSetActivity {
             @Override
             public void success(Game game, Response response) {
                 System.out.println("Success: " + game);
-                initGridView(game);
+                initGameView(game);
             }
 
             @Override
