@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.kdoherty.set.R;
 
-public class GameOver extends Activity {
+public class GameOverPractice extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
