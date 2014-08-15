@@ -24,7 +24,8 @@ import retrofit.mime.TypedInput;
 public interface SetApi {
 
 //    public static final String ENDPOINT = "http://nodejs-setserver.rhcloud.com";
-    public static final String ENDPOINT = "http://10.0.2.2:5000";
+//    public static final String ENDPOINT = "http://10.0.2.2:5000";
+      public static final String ENDPOINT = "http://calm-caverns-3319.herokuapp.com";
 
     @GET("/games")
     public void getGames(Callback<Games> response);
