@@ -50,6 +50,11 @@ public class GameOver extends Activity {
         startActivity(times);
     }
 
+    public void home(View v) {
+        Intent home = new Intent(getApplicationContext(), HomeScreen.class);
+        startActivity(home);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
