@@ -32,13 +32,21 @@ public class SetSolver {
 	 * @return The found set if there is one. Otherwise null.
 	 */
 	public static Set findSet(List<Card> cards) {
-		List<Set> sets = toSets(cards, Find.ONE);
+		List<Set> sets = toSets(shallowCopyList(cards), Find.ONE);
 		if (sets.isEmpty()) {
 			// No Set could be found
 			return null;
 		}
 		return sets.get(0);
 	}
+
+    private static <T> List<T> shallowCopyList(List<T> list) {
+        List<T> copy = new ArrayList<>();
+        for (T t : list) {
+            copy.add(t);
+        }
+        return copy;
+    }
 
 	/**
 	 * Black box helper method for toSets
@@ -69,9 +77,6 @@ public class SetSolver {
 	private static List<Set> toSets(List<Card> cards,
 			List<Set> sets, Find find) {
 		int numCards = cards.size();
-		Card cardA;
-		Card cardB;
-		Card cardC;
 		if (numCards < 3) {
             return sets;
 			//throw new RuntimeException("Need 3 cards to make a set");
@@ -84,6 +89,10 @@ public class SetSolver {
             }
 			return sets;
 		}
+
+        Card cardA;
+        Card cardB;
+        Card cardC;
 		int count = numCards - 2;
 		int switchBCount = 0;
 		cardA = cards.get(0);
