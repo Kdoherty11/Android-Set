@@ -4,20 +4,25 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
 import com.kdoherty.adapters.DbAdapter;
 import com.kdoherty.set.R;
 
@@ -27,6 +32,12 @@ public class Login extends Activity {
 
     /** DataBase Adapter. This is where user credentials and information is stored */
     private DbAdapter mDb;
+
+    private static final String SPF_NAME_KEY = "vidslogin";
+    private static final String USERNAME_KEY = "username";
+    private static final String PASSWORD_KEY = "password";
+
+    public static String USERNAME;
 
     /**
      * The default email to populate the email field with.
@@ -53,6 +64,7 @@ public class Login extends Activity {
     private View mLoginStatusView;
     /** UI Reference for the login status message */
     private TextView mLoginStatusMessageView;
+    private CheckedTextView rememberMe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +74,16 @@ public class Login extends Activity {
 
         // Set up the login form.
         mUserName = getIntent().getStringExtra(EXTRA_EMAIL);
-        mUserNameView = (EditText) findViewById(R.id.email);
+        mUserNameView = (EditText) findViewById(R.id.etUserName);
         mUserNameView.setText(mUserName);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (EditText) findViewById(R.id.etPass);
         mPasswordView
                 .setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView textView, int id,
                                                   KeyEvent keyEvent) {
-                        if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                        if (id == R.id.btnLogin || id == EditorInfo.IME_NULL) {
                             attemptLogin();
                             return true;
                         }
@@ -79,9 +91,31 @@ public class Login extends Activity {
                     }
                 });
 
+        rememberMe = (CheckedTextView) findViewById(R.id.remember_me);
+        rememberMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rememberMe.toggle();
+            }
+        });
+
+        SharedPreferences loginPreferences = getSharedPreferences(SPF_NAME_KEY,
+                Context.MODE_PRIVATE);
+
+        String rememberedUsername = loginPreferences.getString(USERNAME_KEY, "");
+        String rememberedPassword = loginPreferences.getString(PASSWORD_KEY, "");
+        mUserNameView.setText(rememberedUsername);
+        mPasswordView.setText(rememberedPassword);
+        if (!Strings.isNullOrEmpty(rememberedUsername) && !Strings.isNullOrEmpty(rememberedPassword)) {
+            rememberMe.setChecked(true);
+        }
+
         mLoginFormView = findViewById(R.id.login_form);
         mLoginStatusView = findViewById(R.id.login_status);
         mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
+
+        TextView txtSignUp = (TextView) findViewById(R.id.txtSignUp);
+        txtSignUp.setMovementMethod(LinkMovementMethod.getInstance());
 
         mDb = new DbAdapter(this);
         mDb.open();
@@ -245,8 +279,8 @@ public class Login extends Activity {
                 e.printStackTrace();
                 throw new RuntimeException("Problem decoding password");
             }
-            // TODO: Hack
-            return mPassword.equals(decoded) || mPassword.equals(password);
+            //return mPassword.equals(decoded) || mPassword.equals(password);
+            return mPassword.equals(decoded);
         }
 
         /**
@@ -258,10 +292,17 @@ public class Login extends Activity {
             mAuthTask = null;
             showProgress(false);
             if (success) {
+                if (rememberMe.isChecked()) {
+                    SharedPreferences loginPreferences = getSharedPreferences(SPF_NAME_KEY, Context.MODE_PRIVATE);
+                    loginPreferences.edit().putString(USERNAME_KEY, mUserName).putString(PASSWORD_KEY, mPassword).commit();
+                } else {
+                    SharedPreferences loginPreferences = getSharedPreferences(SPF_NAME_KEY, Context.MODE_PRIVATE);
+                    loginPreferences.edit().clear().commit();
+                }
+                USERNAME = mUserName;
                 Intent homeScreen = new Intent(getApplicationContext(),
                         HomeScreen.class);
                 startActivity(homeScreen);
-                //TODO
             } else {
                 mPasswordView
                         .setError(getString(R.string.error_incorrect_password));
