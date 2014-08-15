@@ -30,7 +30,7 @@ public class HomeScreen extends Activity {
         SCREEN_WIDTH= metrics.widthPixels;
         SCREEN_HEIGHT = metrics.heightPixels;
 
-        String [] captions = {"Multiplayer", "Single Player", "Stop Watch", "Play Computer"};
+        String [] captions = {"Multiplayer", "Single Player", "Race", "Play Computer"};
         int [] imageIds = {R.drawable.multiplayer, R.drawable.read_icon,
                 R.drawable.stopwatch, R.drawable.computer_icon};
         HomeGridAdapter adapter = new HomeGridAdapter(this, captions, imageIds);
@@ -47,8 +47,7 @@ public class HomeScreen extends Activity {
                         startIntent(TimeScroller.class);
                         break;
                     case 2:
-                        Toast.makeText(HomeScreen.this, "Stop Watch", Toast.LENGTH_SHORT).show();
-                        startIntent(Race.class);
+                        startIntent(RaceSetup.class);
                         break;
                     case 3:
                         Toast.makeText(HomeScreen.this, "Computer", Toast.LENGTH_SHORT).show();
