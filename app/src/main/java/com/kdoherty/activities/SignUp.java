@@ -46,22 +46,22 @@ public class SignUp extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        mUserNameView = (EditText) findViewById(R.id.editTextUserName);
+        mUserNameView = (EditText) findViewById(R.id.etUserName);
         mUserNameView.setText(mUserName);
 
-        mPasswordView = (EditText) findViewById(R.id.editTextPassword);
+        mPasswordView = (EditText) findViewById(R.id.etPass);
         mPasswordView
                 .setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView textView, int id,
                                                   KeyEvent keyEvent) {
-                        if (id == R.id.editTextUserName || id == EditorInfo.IME_NULL) {
+                        if (id == R.id.etUserName || id == EditorInfo.IME_NULL) {
                             return true;
                         }
                         return false;
                     }
                 });
-        mConfirmPasswordView = (EditText) findViewById(R.id.editTextConfirmPassword);
+        mConfirmPasswordView = (EditText) findViewById(R.id.etConfirmPass);
 
         // Show the Up button in the action bar.
         setupActionBar();
