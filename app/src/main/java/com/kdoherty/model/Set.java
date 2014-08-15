@@ -71,11 +71,11 @@ public class Set implements Iterable<Card> {
 	 * @return is this Set a set
 	 */
 	public boolean isSet() {
-		return areUnique() && 
-				(sameColors() || diffColors())
-				&& (sameShapes() || diffShapes())
-				&& (sameNumbers() || diffNumbers())
-				&& (sameFills() || diffFills());
+		return areUnique() &&
+                (sameColors() || diffColors())
+                && (sameShapes() || diffShapes())
+                && (sameNumbers() || diffNumbers())
+                && (sameFills() || diffFills());
 	}
 
 	/**
