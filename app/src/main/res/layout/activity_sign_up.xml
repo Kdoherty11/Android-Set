@@ -1,38 +1,111 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
-    android:orientation="vertical" >
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity"
 
-    <EditText
-        android:id="@+id/editTextUserName"
+    android:background="#ffffff">
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/prompt_username" >
-        <requestFocus />
-    </EditText>
+        android:layout_centerInParent="true"
+        android:padding="10dp"
+        >
 
-    <EditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/prompt_password"
-        android:inputType="textPassword" />
+        <EditText
+            android:id="@+id/etUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_default_bg"
+            android:layout_marginTop="-2dp"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:hint="User Name"
+            android:textColorHint="#bbbbbb"
+            android:drawableLeft="@drawable/user"/>
+        <EditText
+            android:id="@+id/etPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_bottom_bg"
+            android:layout_marginTop="-2dp"
+            android:padding="10dp"
+            android:hint="Password"
+            android:singleLine="true"
+            android:textColorHint="#bbbbbb"
+            android:password="true"
+            android:drawableLeft="@drawable/password"/>
+        <EditText
+            android:id="@+id/etConfirmPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_bottom_bg"
+            android:layout_marginTop="-2dp"
+            android:singleLine="true"
+            android:padding="10dp"
+            android:hint="Confirm Password"
+            android:textColorHint="#bbbbbb"
+            android:password="true"
+            android:drawableLeft="@drawable/password"/>
+        <Button
+            android:id="@+id/btnSingIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_margin="4dp"
+            android:text="Sign Up"
+            android:onClick="onCreateAccountClick"
+            style="@style/DefaultButtonText"
+            android:background="@drawable/button_default_bg"
+            />
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/editTextConfirmPassword"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/confirm_password"
-        android:inputType="textPassword" />
+</RelativeLayout>
 
-    <Button
-        android:id="@+id/buttonCreateAccount"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
-        android:text="@string/action_create_account"
-        android:onClick="onCreateAccountClick" />
 
-</LinearLayout>
+
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:orientation="vertical" >-->
+
+    <!--<EditText-->
+        <!--android:id="@+id/editTextUserName"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="@string/prompt_username" >-->
+        <!--<requestFocus />-->
+    <!--</EditText>-->
+
+    <!--<EditText-->
+        <!--android:id="@+id/editTextPassword"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="@string/prompt_password"-->
+        <!--android:inputType="textPassword" />-->
+
+    <!--<EditText-->
+        <!--android:id="@+id/editTextConfirmPassword"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="@string/confirm_password"-->
+        <!--android:inputType="textPassword" />-->
+
+    <!--<Button-->
+        <!--android:id="@+id/buttonCreateAccount"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="60dp"-->
+        <!--android:text="@string/action_create_account"-->
+        <!--android:onClick="onCreateAccountClick" />-->
+
+<!--</LinearLayout>-->

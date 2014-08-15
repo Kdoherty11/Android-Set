@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".GameOverActivity" >
+    tools:context="com.kdoherty.activities.GameOver" >
 
     <TextView
         android:id="@+id/gameOver"
@@ -78,9 +78,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_toLeftOf="@id/centerPoint"
         android:layout_marginBottom="38dp"
         android:text="@string/play_again"
         android:onClick="restart"/>
+
+    <Button
+        android:id="@+id/home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/centerPoint"
+        android:layout_marginBottom="38dp"
+        android:text="@string/home"
+        android:onClick="home"/>
 
 </RelativeLayout>
