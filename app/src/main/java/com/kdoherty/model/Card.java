@@ -1,7 +1,7 @@
 package com.kdoherty.model;
 
 /**
- * Represents a Set Card A Card has a shape, number, color, and fill type
+ * Represents a Set Card A Card has a mShape, number, color, and fill type
  * 
  * @author Kevin Doherty
  * @version 04/03/2014
@@ -30,17 +30,17 @@ public class Card {
 	private static final int MAX_NUM = 3;
 
 	/** The shapes on this Card */
-	private final Shape mShape;
+	private final Shape shape;
 	/** The number of shapes on this Card */
-	private final int mNum;
+	private final int num;
 	/** The color of the shapes on this Card */
-	private final Color mColor;
+	private final Color color;
 	/** The fill type of the shapes on this Card */
-	private final Fill mFill;
+	private final Fill fill;
 
 	/**
 	 * Creates a new card
-	 * 
+	 *
 	 * @param shape
 	 *            The shapes on this Card
 	 * @param num
@@ -55,26 +55,33 @@ public class Card {
 			throw new NullPointerException("Card fields can't be null");
 		}
 		rangeCheck(num, MIN_NUM, MAX_NUM);
-		this.mShape = shape;
-		this.mNum = num;
-		this.mColor = color;
-		this.mFill = fill;
+		this.shape = shape;
+		this.num = num;
+		this.color = color;
+		this.fill = fill;
 	}
 
+    public Card(String shape, int num, String color, String fill) {
+        this(Shape.valueOf(shape.toUpperCase()),
+                num,
+                Color.valueOf(color.toUpperCase()),
+                Fill.valueOf(fill.toUpperCase()));
+    }
+
 	Shape getShape() {
-		return mShape;
+		return shape;
 	}
 
 	int getNum() {
-		return mNum;
+		return num;
 	}
 
 	Color getColor() {
-		return mColor;
+		return color;
 	}
 
 	Fill getFill() {
-		return mFill;
+		return fill;
 	}
 
 	/**
@@ -103,10 +110,10 @@ public class Card {
 	@Override
 	public int hashCode() {
 		int result = 17;
-		result = 31 * result + mNum;
-		result = 31 * result + mShape.hashCode();
-		result = 31 * result + mColor.hashCode();
-		result = 31 * result + mFill.hashCode();
+		result = 31 * result + num;
+		result = 31 * result + shape.hashCode();
+		result = 31 * result + color.hashCode();
+		result = 31 * result + fill.hashCode();
 		return result;
 	}
 
@@ -126,8 +133,8 @@ public class Card {
 			return false;
 		}
 		Card that = ((Card) obj);
-		return that.mShape == mShape && that.mNum == mNum
-				&& that.mColor == mColor && that.mFill == mFill;
+		return that.shape == shape && that.num == num
+				&& that.color == color && that.fill == fill;
 	}
 
 	/**
@@ -135,12 +142,12 @@ public class Card {
 	 */
 	@Override
 	public String toString() {
-		String numToString = "one ";
-		if (mNum == 2) {
-			numToString = "two ";
-		} else if (mNum == 3) {
-			numToString = "three ";
+		String numToString = "ONE ";
+		if (num == 2) {
+			numToString = "TWO ";
+		} else if (num == 3) {
+			numToString = "THREE ";
 		}
-		return numToString + mFill + " " + mColor + " " + mShape;
+		return numToString + fill + " " + color + " " + shape;
 	}
 }
