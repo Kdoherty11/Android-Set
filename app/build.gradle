@@ -31,11 +31,12 @@ android {
         }
     }
 
-    dependencies {
-        compile fileTree(include: ['*.jar'], dir: 'libs')
-        compile files('/home/kdoherty/AndroidstudioProjects/Set/android-support-v4.jar')
-        compile 'com.squareup.retrofit:retrofit:1.6.1'
-        compile group: 'com.google.guava', name: 'guava', version: '15.0'
-        compile 'io.socket:socket.io-client:0.2.1'
-
-    }
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('/home/kdoherty/AndroidstudioProjects/Set/android-support-v4.jar')
+    compile 'com.squareup.retrofit:retrofit:1.6.1'
+    compile 'com.google.guava:guava:15.0'
+    compile 'io.socket:socket.io-client:0.2.1'
+    compile 'it.sephiroth.android.library.horizontallistview:library:+'
+    compile files('/home/kdoherty/AndroidstudioProjects/Set/devsmartlib.jar')
+}
