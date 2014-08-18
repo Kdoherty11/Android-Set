@@ -9,7 +9,7 @@
     tools:context="com.kdoherty.activities.Race">
 
     <GridView
-        android:id="@+id/gridView"
+        android:id="@+id/card_grid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/timerView"
@@ -28,5 +28,14 @@
         android:layout_centerHorizontal="true"
         android:textSize="30sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/card_grid"
+        android:layout_centerHorizontal="true"
+        android:textSize="22sp"/>
 
 </RelativeLayout>
