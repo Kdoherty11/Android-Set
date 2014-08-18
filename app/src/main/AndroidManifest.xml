@@ -6,56 +6,122 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/launcher_icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity
-            android:name="com.kdoherty.activities.HomeScreen"
-            android:label="@string/title_activity_home_screen" >
+
+        <activity android:name=".activities.Login"
+            android:label="@string/title_activity_login">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
         <activity
-            android:name="com.kdoherty.activities.TimeScroller"
-            android:label="@string/title_activity_time_scroller"
-            android:parentActivityName="com.kdoherty.activities.HomeScreen" >
+            android:name=".activities.SignUp"
+            android:label="@string/title_activity_sign_up"
+            android:parentActivityName=".activities.Login" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.kdoherty.activities.HomeScreenActivity" />
+                android:value="com.kdoherty.set.activities.Login" />
         </activity>
-        <activity
-            android:name="com.kdoherty.activities.TimedPractice"
-            android:label="@string/title_activity_timed_practice" >
-        </activity>
-        <activity
-            android:name="com.kdoherty.activities.GameOver"
-            android:label="@string/title_activity_game_over" >
-        </activity>
-        <activity
-            android:name="com.kdoherty.activities.Login"
-            android:label="@string/title_activity_login" >
 
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-
-
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
-        </activity>
         <activity
-            android:name="com.kdoherty.activities.SignUp"
-            android:label="@string/title_activity_sign_up" >
+            android:name=".activities.HomeScreen"
+            android:label="@string/title_activity_home_screen"
+            android:parentActivityName=".activities.Login">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.kdoherty.set.activities.Login" />
         </activity>
+
         <activity
-            android:name="com.kdoherty.activities.Multiplayer"
+            android:name=".activities.practice.PracticeSetUp"
+            android:label="@string/title_activity_practice_set_up"
+            android:parentActivityName=".activities.HomeScreen">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.set.activities.HomeScreen" />
+        </activity>
+
+        <activity
+            android:name=".activities.practice.Practice"
+            android:label="@string/title_activity_practice"
+            android:parentActivityName=".activities.practice.PracticeSetUp">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.set.activities.countdown.PracticeSetUp" />
+        </activity>
+
+        <activity
+            android:name=".activities.practice.PracticeOver"
+            android:label="@string/title_activity_practice_over"
+            android:parentActivityName=".activities.practice.Practice">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.set.activities.Practice" />
+        </activity>
+
+        <activity
+            android:name=".activities.practice.CpuPractice"
+            android:label="@string/title_activity_practice_cpu"
+            android:parentActivityName=".activities.practice.PracticeSetUp">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.set.activities.countdown.PracticeSetUp" />
+        </activity>
+
+        <activity
+            android:name=".activities.practice.CpuPracticeOver"
+            android:label="@string/title_activity_practice_cpu_over"
+            android:parentActivityName=".activities.practice.CpuPractice">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.set.activities.countdown.CpuPractice" />
+        </activity>
+
+        <activity
+            android:name=".activities.race.RaceSetUp"
+            android:label="@string/title_activity_race_set_up"
+            android:parentActivityName=".activities.HomeScreen" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.set.activities.HomeScreen" />
+        </activity>
+
+        <activity
+            android:name=".activities.race.Race"
+            android:label="@string/title_activity_race"
+            android:parentActivityName=".activities.race.RaceSetUp">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.set.activities.race.RaceSetUp" />
+        </activity>
+
+        <activity
+            android:name=".activities.race.RaceOver"
+            android:label="@string/title_activity_race_over"
+            android:parentActivityName=".activities.race.Race">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.set.activities.race.Race" />
+        </activity>
+
+        <activity
+            android:name=".activities.Multiplayer"
             android:label="@string/title_activity_multiplayer"
-            android:parentActivityName="com.kdoherty.activities.Login" >
+            android:parentActivityName=".activities.HomeScreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.kdoherty.activities.Login" />
+                android:value="com.kdoherty.set.activities.HomeScreen" />
         </activity>
-        <activity
-            android:name="com.kdoherty.activities.Race"
-            android:label="@string/title_activity_race" >
-        </activity>
+
+        <service
+            android:name=".services.CpuPlayerService"
+            android:exported="false" >
+        </service>
+
     </application>
 
 </manifest>
