@@ -5,18 +5,12 @@
     <string name="action_settings">Settings</string>
     <string name="solver_button">"Find Set</string>
     <string name="deal_button">"Deal</string>
-    <string name="title_activity_home_screen">Home</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="practice_button">Practice Mode</string>
-    <string name="online_button">Play Online</string>
-    <string name="title_activity_game_over">GameOver</string>
-    <string name="title_activity_sign_up">SignUpActivity</string>
-    <string name="practice_mode">Practice</string>
     <string name="timed_practice_button">Timed Practice</string>
-    <string name="title_activity_time_scroller">TimeScroller</string>
     <string name="game_over">Game Over!</string>
     <string name="play_again">Play again</string>
     <string name="home">Home</string>
+    <string name="time_spinner_prompt">Select a time</string>
+    <string name="difficulty_spinner_prompt">Select a difficulty</string>
 
     <style name="DefaultButtonText">
         <item name="android:layout_width">fill_parent</item>
@@ -35,18 +29,35 @@
     <string-array name="time_array">
         <item>Select A Time</item>
         <item>1 Minute</item>
-        <item>2 Minutes</item>
         <item>3 Minutes</item>
-        <item>4 Minutes</item>
         <item>5 Minutes</item>
         <item>10 Minutes</item>
         <item>15 Minutes</item>
     </string-array>
+    <string-array name="cpu_difficulties">
+        <item>Select A Difficulty</item>
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+        <item>Insane</item>
+    </string-array>
 
-    <string name="title_activity_timed_practice">TimedPractice</string>
-    <string name="title_activity_multiplayer">Multiplayer</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_socket">SocketActivity</string>
+    <string name="title_activity_login">Sign In</string>
+    <string name="title_activity_sign_up">Sign Up</string>
+    <string name="title_activity_home_screen">Home</string>
+
+    <string name="title_activity_practice_set_up">Game Options</string>
+
+    <string name="title_activity_practice">Practice</string>
+    <string name="title_activity_practice_cpu">Practice</string>
+
+    <string name="title_activity_practice_over">Game Over</string>
+    <string name="title_activity_practice_cpu_over">Game Over</string>
+
+    <string name="title_activity_race_set_up">Race Options</string>
     <string name="title_activity_race">Race</string>
+    <string name="title_activity_race_over">Game Over</string>
+
+    <string name="title_activity_multiplayer">Multiplayer</string>
 
 </resources>
