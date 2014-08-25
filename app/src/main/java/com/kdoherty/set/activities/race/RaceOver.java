@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
 import com.kdoherty.set.activities.HomeScreen;
 
@@ -18,11 +19,11 @@ public class RaceOver extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_race_over);
         Bundle extras = getIntent().getExtras();
-        String time = extras.getString(Race.TIME_KEY);
+        String time = extras.getString(Constants.Keys.TIME);
         TextView timeView = (TextView) findViewById(R.id.time);
         timeView.setText("Time: " + time);
 
-        int targetNum = extras.getInt(RaceSetUp.TARGET_KEY);
+        int targetNum = extras.getInt(Constants.Keys.TARGET);
         TextView target = (TextView) findViewById(R.id.target);
         target.setText("Target: " + targetNum);
     }

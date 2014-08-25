@@ -6,21 +6,40 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
+import com.kdoherty.set.activities.ActivityUtils;
 
 public class RaceSetUp extends Activity {
 
     EditText targetSetsView;
-
-    public static final String TARGET_KEY = "target";
+    CheckedTextView cpuPlayerOpt;
+    Spinner timeSpinner;
+    Spinner difficultySpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_race_setup);
         targetSetsView = (EditText) findViewById(R.id.target_sets);
+        difficultySpinner = (Spinner) findViewById(R.id.cpu_difficulty_spinner);
+        cpuPlayerOpt = (CheckedTextView) findViewById(R.id.cpu_player_chk_box);
+        cpuPlayerOpt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cpuPlayerOpt.toggle();
+                if (cpuPlayerOpt.isChecked()) {
+                    difficultySpinner.setVisibility(View.VISIBLE);
+                } else {
+                    difficultySpinner.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
 
 
@@ -43,12 +62,28 @@ public class RaceSetUp extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onStartClick(View view) {
+    public void onStartClick(View v) {
 
-        Intent race = new Intent(getApplicationContext(), Race.class);
         int targetSets = Integer.valueOf(targetSetsView.getText().toString());
-        race.putExtra(TARGET_KEY, targetSets);
-        startActivity(race);
-
+        if (targetSets < 1 || targetSets > 25) {
+            Toast.makeText(this, "Please select a target between 1 and 25", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (cpuPlayerOpt.isChecked()) {
+            Intent cpuRace = new Intent(getApplicationContext(), CpuRace.class);
+            String difficultySelected = String.valueOf(difficultySpinner.getSelectedItem());
+            if (difficultySelected.equalsIgnoreCase("Select A Difficulty")) {
+                Toast.makeText(this, "Please select a difficulty", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                cpuRace.putExtra(Constants.Keys.CPU_DIFFICULTY, ActivityUtils.getDifficulty(difficultySelected));
+            }
+            cpuRace.putExtra(Constants.Keys.TARGET, targetSets);
+            startActivity(cpuRace);
+        } else {
+            Intent race = new Intent(getApplicationContext(), Race.class);
+            race.putExtra(Constants.Keys.TARGET, targetSets);
+            startActivity(race);
+        }
     }
 }
