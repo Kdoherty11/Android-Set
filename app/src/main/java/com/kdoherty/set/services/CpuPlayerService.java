@@ -54,7 +54,6 @@ public class CpuPlayerService extends IntentService {
      * parameters.
      */
     private void handleActionCpuPlayer(int cpuDifficulty, List<Card> cards) {
-        System.out.println("handleActionCpu called");
         Random random = new Random();
         int num = random.nextInt(cpuDifficulty);
 
@@ -70,7 +69,6 @@ public class CpuPlayerService extends IntentService {
 
         Set set = SetSolver.findSet(cards);
 
-        System.out.println("sending set " + set);
         Intent broadcast = new Intent(Constants.Actions.CPU_PLAYER);
         broadcast.setAction(Constants.Actions.BROADCAST);
         broadcast.addCategory(Intent.CATEGORY_DEFAULT);
