@@ -9,15 +9,14 @@
         android:icon="@drawable/launcher_icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
-        <activity android:name=".activities.Login"
-            android:label="@string/title_activity_login">
+        <activity
+            android:name=".activities.Login"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.SignUp"
             android:label="@string/title_activity_sign_up"
@@ -26,61 +25,54 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kdoherty.set.activities.Login" />
         </activity>
-
         <activity
             android:name=".activities.HomeScreen"
             android:label="@string/title_activity_home_screen"
-            android:parentActivityName=".activities.Login">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.kdoherty.set.activities.Login" />
+            android:parentActivityName=".activities.Login" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.set.activities.Login" />
         </activity>
-
         <activity
             android:name=".activities.practice.PracticeSetUp"
             android:label="@string/title_activity_practice_set_up"
-            android:parentActivityName=".activities.HomeScreen">
+            android:parentActivityName=".activities.HomeScreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kdoherty.set.activities.HomeScreen" />
         </activity>
-
         <activity
             android:name=".activities.practice.Practice"
             android:label="@string/title_activity_practice"
-            android:parentActivityName=".activities.practice.PracticeSetUp">
+            android:parentActivityName=".activities.practice.PracticeSetUp" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kdoherty.set.activities.countdown.PracticeSetUp" />
         </activity>
-
         <activity
             android:name=".activities.practice.PracticeOver"
             android:label="@string/title_activity_practice_over"
-            android:parentActivityName=".activities.practice.Practice">
+            android:parentActivityName=".activities.practice.Practice" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kdoherty.set.activities.Practice" />
         </activity>
-
         <activity
             android:name=".activities.practice.CpuPractice"
             android:label="@string/title_activity_practice_cpu"
-            android:parentActivityName=".activities.practice.PracticeSetUp">
+            android:parentActivityName=".activities.practice.PracticeSetUp" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kdoherty.set.activities.countdown.PracticeSetUp" />
         </activity>
-
         <activity
             android:name=".activities.practice.CpuPracticeOver"
             android:label="@string/title_activity_practice_cpu_over"
-            android:parentActivityName=".activities.practice.CpuPractice">
+            android:parentActivityName=".activities.practice.CpuPractice" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kdoherty.set.activities.countdown.CpuPractice" />
         </activity>
-
         <activity
             android:name=".activities.race.RaceSetUp"
             android:label="@string/title_activity_race_set_up"
@@ -89,25 +81,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kdoherty.set.activities.HomeScreen" />
         </activity>
-
         <activity
             android:name=".activities.race.Race"
             android:label="@string/title_activity_race"
-            android:parentActivityName=".activities.race.RaceSetUp">
+            android:parentActivityName=".activities.race.RaceSetUp" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kdoherty.set.activities.race.RaceSetUp" />
         </activity>
-
         <activity
             android:name=".activities.race.RaceOver"
             android:label="@string/title_activity_race_over"
-            android:parentActivityName=".activities.race.Race">
+            android:parentActivityName=".activities.race.Race" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kdoherty.set.activities.race.Race" />
         </activity>
-
         <activity
             android:name=".activities.Multiplayer"
             android:label="@string/title_activity_multiplayer"
@@ -116,12 +105,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kdoherty.set.activities.HomeScreen" />
         </activity>
+        <activity
+            android:name=".activities.race.CpuRace"
+            android:label="@string/title_activity_cpu_race"
+            android:parentActivityName=".activities.race.RaceSetUp" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kdoherty.set.activities.race.RaceSetUp" />
+        </activity>
 
         <service
             android:name=".services.CpuPlayerService"
             android:exported="false" >
         </service>
 
+        <activity
+            android:name=".activities.MultiplayerOver"
+            android:label="@string/title_activity_multiplayer_over" >
+        </activity>
     </application>
 
 </manifest>
