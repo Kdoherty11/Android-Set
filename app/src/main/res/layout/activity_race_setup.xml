@@ -17,12 +17,35 @@
         android:hint="Target Sets"
         />
 
-    <Button
+    <CheckedTextView
+        android:id="@+id/cpu_player_chk_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/target_sets"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+        android:text="Play Computer"
+        />
+
+
+    <Spinner
+        android:id="@+id/cpu_difficulty_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/difficulty_spinner_prompt"
+        android:entries="@array/cpu_difficulties"
+        android:layout_below="@id/cpu_player_chk_box"
+        android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:text="Start"
         android:onClick="onStartClick"
-        android:text="Start"/>
+        android:visibility="visible"
+        />
 
 </RelativeLayout>
