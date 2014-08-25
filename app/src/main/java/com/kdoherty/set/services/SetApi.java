@@ -10,6 +10,7 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -22,9 +23,9 @@ import retrofit.mime.TypedInput;
  */
 public interface SetApi {
 
-//    public static final String ENDPOINT = "http://nodejs-setserver.rhcloud.com";
+    //    public static final String ENDPOINT = "http://nodejs-setserver.rhcloud.com";
 //    public static final String ENDPOINT = "http://10.0.2.2:5000";
-      public static final String ENDPOINT = "http://calm-caverns-3319.herokuapp.com";
+    public static final String ENDPOINT = "http://calm-caverns-3319.herokuapp.com";
 
     @GET("/games")
     public void getGames(Callback<Games> response);
@@ -34,6 +35,9 @@ public interface SetApi {
 
     @GET("/games/{id}")
     public void getGame(@Path("id") String id, Callback<Game> response);
+
+    @DELETE("/games/{id}")
+    public void removeGame(@Path("id") String id, Callback<Response> response);
 
     @GET("/games/{id}/findset")
     public void findSet(@Path("id") String id, Callback<Set> response);
@@ -54,9 +58,10 @@ public interface SetApi {
 
     @FormUrlEncoded
     @POST("/games/{id}/incrementscore")
-    public void incrementScore(@Path("id") String id, @Field("playerName") String name, Callback<Response> response);
+    public void incrementScore(@Path("id") String id, @Field("name") String name, Callback<Response> response);
 
     @FormUrlEncoded
     @POST("/games/{id}/removeplayer")
     public void removePlayer(@Path("id") String id, @Field("name") String name, Callback<Response> response);
+
 }
