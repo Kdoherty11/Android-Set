@@ -1,12 +1,17 @@
 package com.kdoherty.set.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.devsmart.android.ui.HorizontalListView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -14,11 +19,12 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
-import com.kdoherty.set.adapters.PlayerAdapter;
 import com.kdoherty.set.model.Card;
 import com.kdoherty.set.model.Game;
 import com.kdoherty.set.model.Games;
+import com.kdoherty.set.model.Player;
 import com.kdoherty.set.services.SetApi;
 
 import java.io.BufferedReader;
@@ -27,6 +33,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.socket.IOAcknowledge;
@@ -51,22 +59,80 @@ public class Multiplayer extends AbstractSetActivity {
 
     private SocketIO socket = null;
 
+    int player1ScoreNum;
+    int player2ScoreNum;
+
+    private String player2NameStr;
+
+    private List<TextView> playerViews;
+
+    private ProgressBar spinner;
+    private TextView findingGame;
+
+    private int numPlayers;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_multiplayer);
+        super.onCreate(savedInstanceState, R.layout.activity_multiplayer, R.color.WHITE);
         context = getApplicationContext();
+        if (Login.USERNAME == null) {
+            Intent login = new Intent(getApplicationContext(), Login.class);
+            startActivity(login);
+        }
+        initPlayerViews();
         initApi();
         initGameId();
         initSocket();
     }
 
+    private void initPlayerViews() {
+        playerViews = new ArrayList<>();
+        playerViews.add((TextView) findViewById(R.id.player1));
+        playerViews.add((TextView) findViewById(R.id.player2));
+        playerViews.add((TextView) findViewById(R.id.player3));
+        playerViews.add((TextView) findViewById(R.id.player4));
+    }
+
+    private void showProgressSpinner() {
+        if (spinner == null || findingGame == null) {
+            spinner = (ProgressBar) findViewById(R.id.progressBar);
+            findingGame = (TextView) findViewById(R.id.findingGame);
+        }
+        spinner.setVisibility(View.VISIBLE);
+        findingGame.setVisibility(View.VISIBLE);
+    }
+
+    private void removeSpinner() {
+        if (spinner != null && findingGame != null) {
+            spinner.setVisibility(View.GONE);
+            findingGame.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     protected void initGameView(Game game) {
-        super.initGameView(game);
-        PlayerAdapter adapter = new PlayerAdapter(getApplicationContext(), game.getPlayers());
-        HorizontalListView playersView = (HorizontalListView) findViewById(R.id.player_list);
-        playersView.setAdapter(adapter);
+        if (game.isOver()) {
+            mGame = game;
+            finishGame();
+        }
+        List<Player> players = game.getPlayers();
+        numPlayers = players.size();
+        if (numPlayers == 1) {
+            showProgressSpinner();
+        } else {
+            removeSpinner();
+            super.initGameView(game);
+            //bringUserToFront(players);
+            Collections.sort(players);
+            LinearLayout playersLayout = ((LinearLayout) findViewById(R.id.playersLayout));
+            playersLayout.setWeightSum((float) numPlayers);
+            for (int i = 0; i < numPlayers; i++) {
+                Player player = players.get(i);
+                TextView playerView = playerViews.get(i);
+                playerView.setText(player.getName() + '\n' + player.getSetCount());
+                playerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+            }
+        }
     }
 
     private void initGameId() {
@@ -89,20 +155,20 @@ public class Multiplayer extends AbstractSetActivity {
                     if (gameId == null) {
                         throw new IllegalStateException("GameId should never be null");
                     }
-                        System.out.println("Adding player to mGame " + gameId);
-                        api.addPlayer(gameId, Login.USERNAME, new Callback<Response>() {
-                            @Override
-                            public void success(Response response, Response response2) {
-                                System.out.println("Success adding player");
-                                socket.emit("update");
-//                                updateContentFromServer();
-                            }
+                    System.out.println("Adding player to mGame " + gameId);
 
-                            @Override
-                            public void failure(RetrofitError error) {
-                                System.out.println("Failure adding player " + error.getMessage());
-                            }
-                        });
+                    api.addPlayer(gameId, Login.USERNAME, new Callback<Response>() {
+                        @Override
+                        public void success(Response response, Response response2) {
+                            System.out.println("Success adding player");
+                            socket.emit("update", gameId);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            System.out.println("Failure adding player " + error.getMessage());
+                        }
+                    });
                 }
             }
 
@@ -121,6 +187,7 @@ public class Multiplayer extends AbstractSetActivity {
                 String resp = getResponseStr(response);
                 gameId = resp.substring(1, resp.length() - 1);
                 System.out.println("Adding player " + Login.USERNAME + " to mGame " + gameId);
+
                 api.addPlayer(gameId, Login.USERNAME, new Callback<Response>() {
                     @Override
                     public void success(Response response, Response response2) {
@@ -155,7 +222,7 @@ public class Multiplayer extends AbstractSetActivity {
         socket.connect(new IOCallback() {
             @Override
             public void onMessage(JsonElement json, IOAcknowledge ack) {
-               System.out.println("Server said:" + json.toString());
+                System.out.println("Server said:" + json.toString());
             }
 
             @Override
@@ -165,7 +232,7 @@ public class Multiplayer extends AbstractSetActivity {
 
             @Override
             public void on(String event, IOAcknowledge ack, JsonElement... args) {
-                System.out.println("Server triggered event '" + event + "'");
+                System.out.println("Server triggered event '" + event + " with args " + args.toString());
                 if (event.equalsIgnoreCase("update")) {
                     updateContentFromServer();
                 }
@@ -220,21 +287,6 @@ public class Multiplayer extends AbstractSetActivity {
         return sb.toString();
     }
 
-
-    private void addPlayer(String id, String name) {
-        api.addPlayer(id, name, new Callback<Response>() {
-            @Override
-            public void success(Response response, Response response2) {
-                System.out.println("Adding player Response: " + getResponseStr(response));
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                throw new RuntimeException("Failure adding player " + error.getMessage());
-            }
-        });
-    }
-
     private void initApi() {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Card.class, new CardDeserializer())
@@ -280,11 +332,12 @@ public class Multiplayer extends AbstractSetActivity {
                 String str = getResponseStr(result);
                 Toast.makeText(Multiplayer.this, str, Toast.LENGTH_SHORT).show();
                 if (str.equalsIgnoreCase("\"Set!\"")) {
-                    System.out.println("Attempting to send update to socket");
+                    System.out.println("Trying to increment score and username is " + Login.USERNAME);
                     api.incrementScore(gameId, Login.USERNAME, new Callback<Response>() {
                         @Override
                         public void success(Response response, Response response2) {
                             System.out.println("Success incrementing score");
+                            socket.emit("update", gameId);
                         }
 
                         @Override
@@ -292,7 +345,6 @@ public class Multiplayer extends AbstractSetActivity {
                             System.out.println("failure incrementing score " + error.getMessage());
                         }
                     });
-                    socket.emit("update");
                 } else {
                     System.out.println("str is actually " + str);
                 }
@@ -316,6 +368,7 @@ public class Multiplayer extends AbstractSetActivity {
             @Override
             public void success(Response response, Response response2) {
                 System.out.println("Success removing player");
+                socket.emit("update", gameId);
             }
 
             @Override
@@ -341,7 +394,6 @@ public class Multiplayer extends AbstractSetActivity {
             int num = jsonCard.get("num").getAsInt();
             String color = jsonCard.get("color").getAsString();
             String fill = jsonCard.get("fill").getAsString();
-
             return new Card(shape, num, color, fill);
         }
     }
@@ -354,7 +406,21 @@ public class Multiplayer extends AbstractSetActivity {
     }
 
     protected void finishGame() {
+        api.removeGame(gameId, new Callback<Response>() {
+                    @Override
+                    public void success(Response response, Response response2) {
+                        System.out.println("success removing game");
+                    }
 
+                    @Override
+                    public void failure(RetrofitError error) {
+                        System.out.println("failure removing game");
+                    }
+                });
+        Intent gameOver = new Intent(getApplicationContext(),
+                MultiplayerOver.class);
+        gameOver.putParcelableArrayListExtra(Constants.Keys.PLAYERS, (ArrayList) mGame.getPlayers());
+        startActivity(gameOver);
     }
 
     @Override
