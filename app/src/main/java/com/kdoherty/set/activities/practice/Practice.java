@@ -36,7 +36,6 @@ public class Practice extends AbstractSetActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_practice, R.color.WHITE);
-        mTime = getIntent().getExtras().getLong(Constants.Keys.TIME);
         initTimer();
         initGameView(new Game());
     }
@@ -45,7 +44,7 @@ public class Practice extends AbstractSetActivity {
     protected void finishGame() {
         Intent gameOver = new Intent(getApplicationContext(),
                 PracticeOver.class);
-        gameOver.putExtra(Constants.Keys.USER_SCORE, mSetCount);
+        gameOver.putExtra(Constants.Keys.USER_SCORE, mSetCount.get());
         gameOver.putExtra(Constants.Keys.USER_WRONG, mBadSetCount);
         gameOver.putExtra(Constants.Keys.TIME, mTime);
         startActivity(gameOver);
@@ -72,6 +71,7 @@ public class Practice extends AbstractSetActivity {
     }
 
     private void initTimer() {
+        mTime = getIntent().getExtras().getLong(Constants.Keys.TIME);
         final SimpleDateFormat timeFormat = new SimpleDateFormat("m:ss",
                 Locale.getDefault());
         String startTimeStr = timeFormat.format(mTime);
