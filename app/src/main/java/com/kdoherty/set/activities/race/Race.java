@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
 import com.kdoherty.set.activities.AbstractSetActivity;
 import com.kdoherty.set.model.Card;
@@ -21,8 +22,6 @@ public class Race extends AbstractSetActivity {
     private TextView mTimerView;
     private TextView score;
 
-    public static final String TIME_KEY = "time";
-
     private int target;
 
     private Handler customHandler = new Handler();
@@ -35,15 +34,10 @@ public class Race extends AbstractSetActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_race, R.color.WHITE);
         initGameView(new Game());
-        initTimer();
-        target = getIntent().getExtras().getInt(RaceSetUp.TARGET_KEY);
-    }
-
-    @Override
-    protected void initGameView(Game game) {
-        super.initGameView(game);
         score = (TextView) findViewById(R.id.score);
         updateScore();
+        initTimer();
+        target = getIntent().getExtras().getInt(Constants.Keys.TARGET);
     }
 
     @Override
@@ -107,9 +101,8 @@ public class Race extends AbstractSetActivity {
     @Override
     protected void finishGame() {
         Intent gameOver = new Intent(getApplicationContext(), RaceOver.class);
-        gameOver.putExtra(TIME_KEY, mTimerView.getText().toString());
-        gameOver.putExtra(RaceSetUp.TARGET_KEY, target);
+        gameOver.putExtra(Constants.Keys.TIME, mTimerView.getText().toString());
+        gameOver.putExtra(Constants.Keys.TARGET, target);
         startActivity(gameOver);
     }
-
 }
