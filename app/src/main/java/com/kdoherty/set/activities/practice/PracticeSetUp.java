@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
+import com.kdoherty.set.activities.ActivityUtils;
 
 public class PracticeSetUp extends Activity {
 
@@ -54,7 +55,7 @@ public class PracticeSetUp extends Activity {
                 Toast.makeText(this, "Please select a difficulty", Toast.LENGTH_SHORT).show();
                 return;
             } else {
-                countdownCpu.putExtra(Constants.Keys.CPU_DIFFICULTY, getDifficulty(difficultySelected));
+                countdownCpu.putExtra(Constants.Keys.CPU_DIFFICULTY, ActivityUtils.getDifficulty(difficultySelected));
             }
             countdownCpu.putExtra(Constants.Keys.TIME, getMillis(timeSelected));
             startActivity(countdownCpu);
@@ -62,21 +63,6 @@ public class PracticeSetUp extends Activity {
             Intent countdownPractice = new Intent(getApplicationContext(), Practice.class);
             countdownPractice.putExtra(Constants.Keys.TIME, getMillis(timeSelected));
             startActivity(countdownPractice);
-        }
-    }
-
-    private int getDifficulty(String option) {
-        switch (option) {
-            case "Easy":
-                return Constants.Cpu.EASY;
-            case "Medium":
-                return Constants.Cpu.MEDIUM;
-            case "Hard":
-                return Constants.Cpu.HARD;
-            case "Insane":
-                return Constants.Cpu.INSANE;
-            default:
-                throw new IllegalStateException("Illegal option selected " + option);
         }
     }
 
