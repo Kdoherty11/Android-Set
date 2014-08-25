@@ -45,19 +45,18 @@
     <string name="title_activity_login">Sign In</string>
     <string name="title_activity_sign_up">Sign Up</string>
     <string name="title_activity_home_screen">Home</string>
-
     <string name="title_activity_practice_set_up">Game Options</string>
-
     <string name="title_activity_practice">Practice</string>
     <string name="title_activity_practice_cpu">Practice</string>
-
     <string name="title_activity_practice_over">Game Over</string>
     <string name="title_activity_practice_cpu_over">Game Over</string>
-
     <string name="title_activity_race_set_up">Race Options</string>
     <string name="title_activity_race">Race</string>
     <string name="title_activity_race_over">Game Over</string>
-
     <string name="title_activity_multiplayer">Multiplayer</string>
+    <string name="title_activity_cpu_race">CpuRace</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_cpu_race_over">CpuRaceOver</string>
+    <string name="title_activity_multiplayer_over">MultiplayerOver</string>
 
 </resources>
