@@ -15,8 +15,15 @@ public final class Constants {
         public static final String SET = "setExtra";
         public static final String USER_SCORE = "userScoreExtra";
         public static final String USER_WRONG = "userWrongExtra";
-        public static final String CPU_SCORE = "cpuScoreKey";
-
+        public static final String CPU_SCORE = "cpuScoreExtra";
+        public static final String TARGET = "targetSetExtra";
+        public static final String OPP_NAME = "multiplayerOppNameExtra";
+        public static final String PLAYER1_SCORE = "multiplayerPlayer1ScoreExtra";
+        public static final String PLAYER2_SCORE = "multiplayerPlayer2ScoreExtra";
+        public static final String PLAYER3_SCORE = "multiplayerPlayer3ScoreExtra";
+        public static final String PLAYER4_SCORE = "multiplayerPlayer4ScoreExtra";
+        public static final String NUMBER_PLAYERS = "multipalyerNumberPlayersExtra";
+        public static final String PLAYERS = "multiplayerPlayersExtra";
     }
 
     public static final class Actions {
@@ -26,12 +33,9 @@ public final class Constants {
 
     public static final class Cpu {
         public static final int DEFAULT = 150;
-        public static final int EASY = 175;
-        public static final int MEDIUM = 150;
+        public static final int EASY = 200;
+        public static final int MEDIUM = 160;
         public static final int HARD = 125;
-        public static final int INSANE = 100;
+        public static final int INSANE = 80;
     }
-
-
-
 }
