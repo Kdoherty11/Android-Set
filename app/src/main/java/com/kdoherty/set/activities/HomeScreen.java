@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.kdoherty.set.R;
 import com.kdoherty.set.activities.practice.PracticeSetUp;
@@ -32,9 +31,9 @@ public class HomeScreen extends Activity {
         SCREEN_WIDTH= metrics.widthPixels;
         SCREEN_HEIGHT = metrics.heightPixels;
 
-        String [] captions = {"Multiplayer", "Single Player", "Race", "Play Computer"};
+        String [] captions = {"Multiplayer", "Practice", "Race", "Log Out"};
         int [] imageIds = {R.drawable.multiplayer, R.drawable.read_icon,
-                R.drawable.stopwatch, R.drawable.computer_icon};
+                R.drawable.stopwatch, R.drawable.logout};
         HomeGridAdapter adapter = new HomeGridAdapter(this, captions, imageIds);
         GridView grid = (GridView) findViewById(R.id.home_grid);
         grid.setAdapter(adapter);
@@ -44,7 +43,7 @@ public class HomeScreen extends Activity {
                 switch (position) {
                     case 0:
                         startIntent(Multiplayer.class);
-                       break;
+                        break;
                     case 1:
                         startIntent(PracticeSetUp.class);
                         break;
@@ -52,7 +51,7 @@ public class HomeScreen extends Activity {
                         startIntent(RaceSetUp.class);
                         break;
                     case 3:
-                        Toast.makeText(HomeScreen.this, "TBD", Toast.LENGTH_SHORT).show();
+                        startIntent(Login.class);
                         break;
                     default:
                         throw new IllegalStateException("Should not get to default case");
