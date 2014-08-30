@@ -3,6 +3,7 @@
     package="com.kdoherty.set" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -52,11 +53,7 @@
         </activity>
         <activity
             android:name=".activities.practice.PracticeOver"
-            android:label="@string/title_activity_practice_over"
-            android:parentActivityName=".activities.practice.Practice" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.kdoherty.set.activities.Practice" />
+            android:label="@string/title_activity_practice_over" >
         </activity>
         <activity
             android:name=".activities.practice.CpuPractice"
@@ -68,12 +65,7 @@
         </activity>
         <activity
             android:name=".activities.CpuOver"
-            android:label="@string/title_activity_practice_cpu_over"
-            android:parentActivityName=".activities.practice.CpuPractice" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.kdoherty.set.activities.countdown.CpuPractice" />
-        </activity>
+            android:label="@string/title_activity_practice_cpu_over"/>
         <activity
             android:name=".activities.race.RaceSetUp"
             android:label="@string/title_activity_race_set_up"
@@ -92,12 +84,7 @@
         </activity>
         <activity
             android:name=".activities.race.RaceOver"
-            android:label="@string/title_activity_race_over"
-            android:parentActivityName=".activities.race.Race" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.kdoherty.set.activities.race.Race" />
-        </activity>
+            android:label="@string/title_activity_race_over"/>
         <activity
             android:name=".activities.Multiplayer"
             android:label="@string/title_activity_multiplayer"
