@@ -11,9 +11,10 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".activities.Login"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -66,7 +67,7 @@
                 android:value="com.kdoherty.set.activities.countdown.PracticeSetUp" />
         </activity>
         <activity
-            android:name=".activities.practice.CpuPracticeOver"
+            android:name=".activities.CpuOver"
             android:label="@string/title_activity_practice_cpu_over"
             android:parentActivityName=".activities.practice.CpuPractice" >
             <meta-data
@@ -122,6 +123,10 @@
         <activity
             android:name=".activities.MultiplayerOver"
             android:label="@string/title_activity_multiplayer_over" >
+        </activity>
+        <activity
+            android:name=".activities.Leaderboard"
+            android:label="@string/title_activity_leaderboard" >
         </activity>
     </application>
 
