@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckedTextView;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,16 +16,15 @@ import com.kdoherty.set.activities.ActivityUtils;
 
 public class RaceSetUp extends Activity {
 
-    EditText targetSetsView;
+    Spinner targetSetsSpinner;
     CheckedTextView cpuPlayerOpt;
-    Spinner timeSpinner;
     Spinner difficultySpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_race_setup);
-        targetSetsView = (EditText) findViewById(R.id.target_sets);
+        targetSetsSpinner = (Spinner) findViewById(R.id.target_sets);
         difficultySpinner = (Spinner) findViewById(R.id.cpu_difficulty_spinner);
         cpuPlayerOpt = (CheckedTextView) findViewById(R.id.cpu_player_chk_box);
         cpuPlayerOpt.setOnClickListener(new View.OnClickListener() {
@@ -63,16 +61,15 @@ public class RaceSetUp extends Activity {
     }
 
     public void onStartClick(View v) {
-        int targetSets = 0;
-        try {
-            targetSets = Integer.valueOf(targetSetsView.getText().toString());
-        } catch (NumberFormatException ex) {
-            Toast.makeText(this, "Please enter a number between 1 and 25", Toast.LENGTH_SHORT).show();
+        int targetSets;
+        String targetSelected = String.valueOf(targetSetsSpinner.getSelectedItem());
+        if (targetSelected.equalsIgnoreCase("Select a target")) {
+            Toast.makeText(this, "Please select a target", Toast.LENGTH_SHORT).show();
             return;
-        }
-        if (targetSets < 1 || targetSets > 25) {
-            Toast.makeText(this, "Please enter a number between 1 and 25", Toast.LENGTH_SHORT).show();
-            return;
+        } else if (targetSelected.equalsIgnoreCase("Full Deck")) {
+            targetSets = 27;
+        } else {
+            targetSets = Integer.valueOf(targetSelected.substring(0, targetSelected.indexOf(" Set")));
         }
         if (cpuPlayerOpt.isChecked()) {
             Intent cpuRace = new Intent(getApplicationContext(), CpuRace.class);
