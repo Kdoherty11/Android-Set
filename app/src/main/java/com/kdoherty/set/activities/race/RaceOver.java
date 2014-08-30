@@ -96,10 +96,12 @@ public class RaceOver extends Activity implements View.OnClickListener {
                 startActivity(home);
                 break;
             case R.id.leaderboard:
-                Intent leaderboard = new Intent(getApplicationContext(), Leaderboard.class);
-                leaderboard.putExtra(Constants.Keys.TARGET, mTarget);
-                leaderboard.putExtra(Constants.Keys.GAME_MODE, Constants.Modes.RACE);
-                startActivity(leaderboard);
+                if (ActivityUtils.checkOnline(this)) {
+                    Intent leaderboard = new Intent(getApplicationContext(), Leaderboard.class);
+                    leaderboard.putExtra(Constants.Keys.TARGET, mTarget);
+                    leaderboard.putExtra(Constants.Keys.GAME_MODE, Constants.Modes.RACE);
+                    startActivity(leaderboard);
+                }
                 break;
             default:
                 throw new IllegalStateException("Should not get to default case");

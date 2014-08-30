@@ -116,10 +116,12 @@ public class PracticeOver extends Activity implements View.OnClickListener {
                 startActivity(home);
                 break;
             case R.id.leaderboard:
-                Intent leaderboard = new Intent(getApplicationContext(), Leaderboard.class);
-                leaderboard.putExtra(Constants.Keys.TIME, mTime);
-                leaderboard.putExtra(Constants.Keys.GAME_MODE, Constants.Modes.PRACTICE);
-                startActivity(leaderboard);
+                if (ActivityUtils.checkOnline(this)) {
+                    Intent leaderboard = new Intent(getApplicationContext(), Leaderboard.class);
+                    leaderboard.putExtra(Constants.Keys.TIME, mTime);
+                    leaderboard.putExtra(Constants.Keys.GAME_MODE, Constants.Modes.PRACTICE);
+                    startActivity(leaderboard);
+                }
                 break;
             default:
                 throw new IllegalStateException("Should not get to default case");
