@@ -23,6 +23,8 @@ public class Game {
 
     private String id = null;
 
+    private boolean isStarted;
+
     public Game() {
         deal(NUM_START_CARDS);
         while (SetSolver.findSet(activeCards) == null) {
@@ -85,13 +87,10 @@ public class Game {
 
     public boolean isOpen() {
         return true;
-        // TODO: get from server
-       // return players.size() < 4;
     }
 
     public boolean isStarted() {
-       // return !(deck.getCards().size() + activeCards.size() == 81);
-        return false;
+        return isStarted;
     }
 
     public List<Player> getPlayers() {
