@@ -107,15 +107,21 @@ public abstract class AbstractCpuActivity extends AbstractSetActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        sendBroadcast();
+    protected void onStop() {
+        super.onStop();
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+            mReceiver = null;
+        }
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(mReceiver);
+    protected void onRestart() {
+        super.onRestart();
+        if (mReceiver == null) {
+            initCpuPlayer();
+        }
+        sendBroadcast();
     }
 
     protected void sendBroadcast() {
