@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.kdoherty.set.activities.Leaderboard">
+
+    <TextView
+        android:id="@+id/leaderboardTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Leaderboard"
+        android:layout_centerHorizontal="true"
+        android:textSize="40sp"/>
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:layout_below="@id/leaderboardTxt">
+
+        <TextView
+            android:id="@+id/positionHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Rank"
+            android:textSize="26sp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/nameHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Name"
+            android:textSize="26sp"
+            android:layout_weight="2"/>
+
+        <TextView
+            android:id="@+id/scoreHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Score"
+            android:textSize="26sp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/practice_leaderboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+    />
+
+    <ProgressBar
+        android:id="@+id/pLeaderboard_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>
