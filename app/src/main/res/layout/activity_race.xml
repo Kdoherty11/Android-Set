@@ -39,4 +39,12 @@
         android:layout_centerHorizontal="true"
         android:textSize="22sp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/highScore"
+        android:padding="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true" />
+
 </RelativeLayout>

@@ -71,6 +71,7 @@
                 android:singleLine="true"
                 android:textColorHint="#cccccc" />
 
+            <!-- sign-in button -->
             <Button
                 android:id="@+id/btnLogin"
                 style="@style/DefaultButtonText"

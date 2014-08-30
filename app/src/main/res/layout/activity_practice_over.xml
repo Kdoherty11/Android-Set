@@ -74,14 +74,20 @@
         android:textStyle="bold" />
 
     <Button
+        android:id="@+id/leaderboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/restart"
+        android:text="View Leaderboard"/>
+
+    <Button
         android:id="@+id/restart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@id/centerPoint"
         android:layout_marginBottom="38dp"
-        android:text="@string/play_again"
-        android:onClick="restart"/>
+        android:text="@string/play_again"/>
 
     <Button
         android:id="@+id/home"
@@ -90,7 +96,6 @@
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@id/centerPoint"
         android:layout_marginBottom="38dp"
-        android:text="@string/home"
-        android:onClick="home"/>
+        android:text="@string/home"/>
 
 </RelativeLayout>

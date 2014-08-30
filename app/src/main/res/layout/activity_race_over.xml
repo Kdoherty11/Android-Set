@@ -62,5 +62,14 @@
         android:text="@string/home"
         android:onClick="home"/>
 
+    <Button
+        android:id="@+id/leaderboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/restart"
+        android:text="View Leaderboard"/>
+
+
+
 
 </RelativeLayout>
