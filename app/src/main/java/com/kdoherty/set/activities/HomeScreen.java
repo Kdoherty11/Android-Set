@@ -10,7 +10,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
+import com.kdoherty.set.activities.practice.PracticeOver;
 import com.kdoherty.set.activities.practice.PracticeSetUp;
 import com.kdoherty.set.activities.race.RaceSetUp;
 import com.kdoherty.set.adapters.HomeGridAdapter;
@@ -42,7 +44,9 @@ public class HomeScreen extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        startIntent(Multiplayer.class);
+                        if (ActivityUtils.checkOnline(HomeScreen.this)) {
+                            startIntent(Multiplayer.class);
+                        }
                         break;
                     case 1:
                         startIntent(PracticeSetUp.class);
@@ -51,7 +55,11 @@ public class HomeScreen extends Activity {
                         startIntent(RaceSetUp.class);
                         break;
                     case 3:
-                        startIntent(Login.class);
+                        Intent practiceOver = new Intent(getApplicationContext(), PracticeOver.class);
+                        practiceOver.putExtra(Constants.Keys.TIME, 60000l);
+                        practiceOver.putExtra(Constants.Keys.USER_SCORE, 5);
+                        practiceOver.putExtra(Constants.Keys.USER_WRONG, 2);
+                        startActivity(practiceOver);
                         break;
                     default:
                         throw new IllegalStateException("Should not get to default case");
