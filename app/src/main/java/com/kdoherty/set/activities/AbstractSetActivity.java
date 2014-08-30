@@ -28,7 +28,6 @@ public abstract class AbstractSetActivity extends Activity {
     protected GridView mGridView;
     /** Image adapter for card images */
     protected ImageAdapter mAdapter;
-
     /** The Set mGame we are representing in this activity */
     protected Game mGame;
     /** The number of correct sets the user found. Using AtomicInteger because this can be modified
@@ -49,11 +48,11 @@ public abstract class AbstractSetActivity extends Activity {
         setContentView(layoutId);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mBackgroundColor = getResources().getColor(backgroundColorId);
+        mGridView = (GridView) findViewById(R.id.card_grid);
     }
 
     protected void initGameView(Game game) {
         this.mGame = game;
-        mGridView = (GridView) findViewById(R.id.card_grid);
         mAdapter = new ImageAdapter(this, game);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
