@@ -58,5 +58,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_cpu_race_over">CpuRaceOver</string>
     <string name="title_activity_multiplayer_over">MultiplayerOver</string>
+    <string name="title_activity_leaderboard">Leaderboard</string>
 
 </resources>
