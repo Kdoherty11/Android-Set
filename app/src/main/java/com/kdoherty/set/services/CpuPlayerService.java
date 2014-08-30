@@ -50,8 +50,7 @@ public class CpuPlayerService extends IntentService {
     }
 
     /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
+     * Handle action CpuPlayer in a background thread
      */
     private void handleActionCpuPlayer(int cpuDifficulty, List<Card> cards) {
         Random random = new Random();
