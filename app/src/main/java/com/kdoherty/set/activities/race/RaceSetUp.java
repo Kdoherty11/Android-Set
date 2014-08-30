@@ -63,10 +63,15 @@ public class RaceSetUp extends Activity {
     }
 
     public void onStartClick(View v) {
-
-        int targetSets = Integer.valueOf(targetSetsView.getText().toString());
+        int targetSets = 0;
+        try {
+            targetSets = Integer.valueOf(targetSetsView.getText().toString());
+        } catch (NumberFormatException ex) {
+            Toast.makeText(this, "Please enter a number between 1 and 25", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (targetSets < 1 || targetSets > 25) {
-            Toast.makeText(this, "Please select a target between 1 and 25", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter a number between 1 and 25", Toast.LENGTH_SHORT).show();
             return;
         }
         if (cpuPlayerOpt.isChecked()) {
