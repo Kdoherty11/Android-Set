@@ -30,14 +30,14 @@ public class MultiplayerOver extends Activity {
         setContentView(R.layout.activity_multiplayer_over);
         players = getIntent().getExtras().getParcelableArrayList(Constants.Keys.PLAYERS);
         initResults();
-        String resultTxt = results.get(Login.USERNAME);
+        String resultTxt = results.get(ActivityUtils.getUsername(this));
         ((TextView) findViewById(R.id.result)).setText(resultTxt);
         initScoreboard();
     }
 
     private void initResults() {
         Collections.sort(players);
-        String [] places = {"1rst", "2nd", "3rd", "4th"};
+        String [] places = {"1st", "2nd", "3rd", "4th"};
         int placesIndex = 0;
         int offset = 0;
         int playersSize = players.size();
@@ -91,7 +91,7 @@ public class MultiplayerOver extends Activity {
 
 
     public void restart(View v) {
-        Intent home = new Intent(getApplicationContext(), HomeScreen.class);
+        Intent home = new Intent(getApplicationContext(), Multiplayer.class);
         startActivity(home);
     }
 
