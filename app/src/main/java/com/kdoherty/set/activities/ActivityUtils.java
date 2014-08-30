@@ -1,5 +1,10 @@
 package com.kdoherty.set.activities;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.google.common.base.Strings;
 import com.kdoherty.set.Constants;
 
 /**
@@ -9,6 +14,20 @@ public class ActivityUtils {
 
     private ActivityUtils() {
         // Hide constructor
+    }
+
+    private static String mUsername;
+
+    public static String getUsername(Activity activity) {
+        if (!Strings.isNullOrEmpty(mUsername)) {
+            return mUsername;
+        }
+        SharedPreferences usernamePrefs = activity.getSharedPreferences(Constants.Keys.SPF_USERNAME, Context.MODE_PRIVATE);
+        if (usernamePrefs.contains(Constants.Keys.USERNAME)) {
+            mUsername = usernamePrefs.getString(Constants.Keys.USERNAME, "Default");
+            return mUsername;
+        }
+        throw new IllegalStateException("Must be logged in");
     }
 
     public static int getDifficulty(String option) {
@@ -25,8 +44,4 @@ public class ActivityUtils {
                 throw new IllegalStateException("Illegal option selected " + option);
         }
     }
-
-
-
-
 }
