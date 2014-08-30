@@ -3,11 +3,12 @@ package com.kdoherty.set.services;
 import com.kdoherty.set.model.Card;
 import com.kdoherty.set.model.Game;
 import com.kdoherty.set.model.Games;
-import com.kdoherty.set.model.Set;
+import com.kdoherty.set.model.LeaderboardEntry;
 
 import java.util.List;
 
 import retrofit.Callback;
+import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -23,9 +24,13 @@ import retrofit.mime.TypedInput;
  */
 public interface SetApi {
 
-    //    public static final String ENDPOINT = "http://nodejs-setserver.rhcloud.com";
-//    public static final String ENDPOINT = "http://10.0.2.2:5000";
     public static final String ENDPOINT = "http://calm-caverns-3319.herokuapp.com";
+
+    public static final RestAdapter adapter = new RestAdapter.Builder()
+            .setEndpoint(ENDPOINT)
+            .build();
+
+    public static final SetApi INSTANCE = adapter.create(SetApi.class);
 
     @GET("/games")
     public void getGames(Callback<Games> response);
@@ -38,9 +43,6 @@ public interface SetApi {
 
     @DELETE("/games/{id}")
     public void removeGame(@Path("id") String id, Callback<Response> response);
-
-    @GET("/games/{id}/findset")
-    public void findSet(@Path("id") String id, Callback<Set> response);
 
     @POST("/games")
     public void addGame(Callback<Response> response);
@@ -64,4 +66,17 @@ public interface SetApi {
     @POST("/games/{id}/removeplayer")
     public void removePlayer(@Path("id") String id, @Field("name") String name, Callback<Response> response);
 
+    @GET("/leaderboards/practice/{key}")
+    public void getPracticeLeaderboard(@Path("key") long time, Callback<List<LeaderboardEntry>> response);
+
+    @GET("/leaderboards/race/{key}")
+    public void getRaceLeaderboard(@Path("key") int target, Callback<List<LeaderboardEntry>> response);
+
+    @FormUrlEncoded
+    @POST("/leaderboards/practice/{key}")
+    public void insertPracticeEntry(@Path("key") long time, @Field("name") String name, @Field("score") int score, Callback<Response> response);
+
+    @FormUrlEncoded
+    @POST("/leaderboards/race/{key}")
+    public void insertRaceEntry(@Path("key") int target, @Field("name") String name, @Field("score") long time, Callback<Response> response);
 }
