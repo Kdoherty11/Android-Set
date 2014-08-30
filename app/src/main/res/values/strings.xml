@@ -10,6 +10,7 @@
     <string name="play_again">Play again</string>
     <string name="home">Home</string>
     <string name="time_spinner_prompt">Select a time</string>
+    <string name="race_target_prompt">Select a target</string>
     <string name="difficulty_spinner_prompt">Select a difficulty</string>
 
     <style name="DefaultButtonText">
@@ -34,6 +35,16 @@
         <item>10 Minutes</item>
         <item>15 Minutes</item>
     </string-array>
+    <string-array name="race_targets">
+        <item>Select A Target</item>
+        <item>1 Set</item>
+        <item>3 Sets</item>
+        <item>5 Sets</item>
+        <item>10 Sets </item>
+        <item>15 Sets</item>
+        <item>Full Deck</item>
+    </string-array>
+
     <string-array name="cpu_difficulties">
         <item>Select A Difficulty</item>
         <item>Easy</item>
