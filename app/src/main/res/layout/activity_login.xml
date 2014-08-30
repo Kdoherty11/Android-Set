@@ -15,8 +15,8 @@
             android:id="@+id/login_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center_horizontal"
+            android:layout_centerInParent="true"
+            android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone">
 
