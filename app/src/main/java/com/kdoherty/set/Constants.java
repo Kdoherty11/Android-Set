@@ -9,7 +9,7 @@ public final class Constants {
         public static final String SPF_LOGIN = "prefsloginExtra";
         public static final String SPF_HIGHSCORE = "prefsHighScoresExtra";
         public static final String SPF_USERNAME = "prefsUsernameExtra";
-        public static final String SPF_GAME_STATE = "prefsUsernameExtra";
+        public static final String SPF_GAME_STATE = "prefsGameStateExtra";
 
         public static final String USERNAME = "usernameExtra";
         public static final String PASSWORD= "passwordExtra";
