@@ -2,7 +2,9 @@ package com.kdoherty.set.activities;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -17,6 +19,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
 import com.kdoherty.set.adapters.DbAdapter;
 
@@ -185,7 +188,10 @@ public class SignUp extends Activity {
             String base64 = Base64.encodeToString(data, Base64.DEFAULT);
             Log.d("kdoherty", "encoding password " + mPassword + " into " + base64 + " and inserting into DB");
             mDb.insertRow(mUserName, base64);
-            Login.USERNAME = mUserName;
+            SharedPreferences loginPreferences = getSharedPreferences(Constants.Keys.SPF_LOGIN, Context.MODE_PRIVATE);
+            loginPreferences.edit().clear().commit();
+            SharedPreferences usernamePrefs = getSharedPreferences(Constants.Keys.SPF_USERNAME, Context.MODE_PRIVATE);
+            usernamePrefs.edit().putString(Constants.Keys.USERNAME, mUserName).commit();
             Intent homeScreen = new Intent(getApplicationContext(), HomeScreen.class);
             startActivity(homeScreen);
         }

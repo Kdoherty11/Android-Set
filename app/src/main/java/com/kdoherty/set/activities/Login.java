@@ -33,9 +33,6 @@ public class Login extends Activity {
 
     /** DataBase Adapter. This is where user credentials and information is stored */
     private DbAdapter mDb;
-
-    public static String USERNAME;
-
     /**
      * The default email to populate the email field with.
      */
@@ -96,7 +93,7 @@ public class Login extends Activity {
             }
         });
 
-        SharedPreferences loginPreferences = getSharedPreferences(Constants.Keys.SPF_NAME,
+        SharedPreferences loginPreferences = getSharedPreferences(Constants.Keys.SPF_LOGIN,
                 Context.MODE_PRIVATE);
 
         String rememberedUsername = loginPreferences.getString(Constants.Keys.USERNAME, "");
@@ -290,13 +287,14 @@ public class Login extends Activity {
             showProgress(false);
             if (success) {
                 if (rememberMe.isChecked()) {
-                    SharedPreferences loginPreferences = getSharedPreferences(Constants.Keys.SPF_NAME, Context.MODE_PRIVATE);
+                    SharedPreferences loginPreferences = getSharedPreferences(Constants.Keys.SPF_LOGIN, Context.MODE_PRIVATE);
                     loginPreferences.edit().putString(Constants.Keys.USERNAME, mUserName).putString(Constants.Keys.PASSWORD, mPassword).commit();
                 } else {
-                    SharedPreferences loginPreferences = getSharedPreferences(Constants.Keys.SPF_NAME, Context.MODE_PRIVATE);
+                    SharedPreferences loginPreferences = getSharedPreferences(Constants.Keys.SPF_LOGIN, Context.MODE_PRIVATE);
                     loginPreferences.edit().clear().commit();
                 }
-                USERNAME = mUserName;
+                SharedPreferences usernamePrefs = getSharedPreferences(Constants.Keys.SPF_USERNAME, Context.MODE_PRIVATE);
+                usernamePrefs.edit().putString(Constants.Keys.USERNAME, mUserName).commit();
                 Intent homeScreen = new Intent(getApplicationContext(),
                         HomeScreen.class);
                 startActivity(homeScreen);
