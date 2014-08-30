@@ -18,17 +18,11 @@ public class DbAdapter {
     public static final String KEY_ROWID = "_id";
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PASSWORD = "password";
-    // public static final String KEY_HIGH_SCORE = "highscore";
 
-    // TODO: , KEY_HIGH_SCORE
     public static final String[] ALL_KEYS = new String[] { KEY_ROWID,
             KEY_USERNAME, KEY_PASSWORD };
 
-    // Column Numbers for each Field Name:
-    public static final int COL_ROWID = 0;
-    public static final int COL_USERNAME = 1;
     public static final int COL_PASSWORD = 2;
-    // public static final int COL_HIGH_SCORE = 3;
 
     // DataBase Info:
     public static final String DATABASE_NAME = "credentials";
@@ -39,7 +33,6 @@ public class DbAdapter {
             + DATABASE_TABLE + " (" + KEY_ROWID
             + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_USERNAME
             + " TEXT NOT NULL, " + KEY_PASSWORD + " TEXT NOT NULL" + ");";
-    // TODO: + KEY_HIGH_SCORE + ");";
 
     private final Context mContext;
     private DatabaseHelper mDbHelper;
