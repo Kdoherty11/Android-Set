@@ -1,7 +1,9 @@
 package com.kdoherty.set.activities.practice;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Menu;
@@ -33,11 +35,18 @@ public class Practice extends AbstractSetActivity {
 
     protected CountDownTimer mTimer;
 
+    private long millisRemaining;
+
+    boolean solverPressed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_practice, R.color.WHITE);
-        initTimer();
+        System.out.println("On create called");
+        mTime = getIntent().getExtras().getLong(Constants.Keys.TIME);
+        initTimer(mTime);
         initGameView(new Game());
+        initHighScore();
     }
 
     @Override
@@ -57,6 +66,13 @@ public class Practice extends AbstractSetActivity {
         updateScore();
     }
 
+    private void initHighScore() {
+        TextView highScoreView = (TextView) findViewById(R.id.highScore);
+        SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_HIGHSCORE, Context.MODE_PRIVATE);
+        int highScore = prefs.getInt(Constants.Keys.PRACTICE_HIGH_SCORE + String.valueOf(mTime), 0);
+        highScoreView.setText("High Score: " + highScore);
+    }
+
     void updateScore() {
         score.setText("Score: " + mSetCount);
     }
@@ -65,24 +81,29 @@ public class Practice extends AbstractSetActivity {
     protected boolean posSetFound(Set set) {
         boolean setFound = super.posSetFound(set);
         if (setFound) {
-            updateScore();
+            if (solverPressed) {
+                mSetCount.decrementAndGet();
+                solverPressed = false;
+            } else {
+                updateScore();
+            }
         }
         return setFound;
     }
 
-    private void initTimer() {
-        mTime = getIntent().getExtras().getLong(Constants.Keys.TIME);
+    private void initTimer(long time) {
         final SimpleDateFormat timeFormat = new SimpleDateFormat("m:ss",
                 Locale.getDefault());
-        String startTimeStr = timeFormat.format(mTime);
+        String startTimeStr = timeFormat.format(time);
 
         mTimerView = (TextView) findViewById(R.id.timerView);
         mTimerView.setText(startTimeStr);
 
-        mTimer = new CountDownTimer(mTime, 1000) {
+        mTimer = new CountDownTimer(time, 1000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
+                millisRemaining = millisUntilFinished;
                 mTimerView.setText(timeFormat.format(millisUntilFinished));
                 if (millisUntilFinished <= 6000) {
                     mTimerView.setTextColor(getResources().getColor(
@@ -119,6 +140,9 @@ public class Practice extends AbstractSetActivity {
             }
             highlightAll(getResources().getColor(R.color.red_cherry));
         }
+
+        solverPressed = true;
+
     }
 
     @Override
@@ -138,8 +162,24 @@ public class Practice extends AbstractSetActivity {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("On Pause called");
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         mTimer.cancel();
+        SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
+        prefs.edit().putLong(Constants.Keys.TIME, millisRemaining).commit();
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
+        long timeRemaining = prefs.getLong(Constants.Keys.TIME, 0l);
+        initTimer(timeRemaining);
     }
 }

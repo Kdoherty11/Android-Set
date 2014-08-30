@@ -1,6 +1,8 @@
 package com.kdoherty.set.activities.race;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -22,13 +24,14 @@ public class Race extends AbstractSetActivity {
     private TextView mTimerView;
     private TextView score;
 
+    private long elapsedTime = 0l;
+
     private int target;
 
-    private Handler customHandler = new Handler();
+    private Handler handler;
 
     final SimpleDateFormat timeFormat = new SimpleDateFormat("m:ss",
             Locale.getDefault());
-    String startTimeStr = timeFormat.format(0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class Race extends AbstractSetActivity {
         updateScore();
         initTimer();
         target = getIntent().getExtras().getInt(Constants.Keys.TARGET);
+        initHighScore();
     }
 
     @Override
@@ -53,7 +57,6 @@ public class Race extends AbstractSetActivity {
     }
 
     private void initTimer() {
-
         final SimpleDateFormat timeFormat = new SimpleDateFormat("m:ss",
                 Locale.getDefault());
         String startTimeStr = timeFormat.format(0);
@@ -61,18 +64,24 @@ public class Race extends AbstractSetActivity {
         mTimerView = (TextView) findViewById(R.id.timerView);
         mTimerView.setText(startTimeStr);
 
-        final Handler handler = new Handler();
-        final long startTimeMillis = System.currentTimeMillis();
+        handler = new Handler();
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                long elapsedTime = System.currentTimeMillis() - startTimeMillis;
+                elapsedTime += 100;
                 mTimerView.setText(timeFormat.format(elapsedTime));
-                handler.postDelayed(this, 1000);
+                handler.postDelayed(this, 100);
             }
         };
         handler.removeCallbacks(task);
         handler.post(task);
+    }
+
+    private void initHighScore() {
+        TextView highScoreView = (TextView) findViewById(R.id.highScore);
+        SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_HIGHSCORE, Context.MODE_PRIVATE);
+        long highScore = prefs.getLong(Constants.Keys.RACE_HIGH_SCORE + String.valueOf(target), 0);
+        highScoreView.setText("High Score: " + timeFormat.format(highScore));
     }
 
     void updateScore() {
@@ -103,6 +112,25 @@ public class Race extends AbstractSetActivity {
         Intent gameOver = new Intent(getApplicationContext(), RaceOver.class);
         gameOver.putExtra(Constants.Keys.TIME, mTimerView.getText().toString());
         gameOver.putExtra(Constants.Keys.TARGET, target);
+        gameOver.putExtra(Constants.Keys.ELAPSED_TIME_RACE, elapsedTime);
         startActivity(gameOver);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        handler.removeCallbacksAndMessages(null);
+        handler = null;
+        SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
+        prefs.edit().putLong(Constants.Keys.TIME, elapsedTime).commit();
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
+        long time = prefs.getLong(Constants.Keys.TIME, 0l);
+        elapsedTime = time;
+        initTimer();
     }
 }

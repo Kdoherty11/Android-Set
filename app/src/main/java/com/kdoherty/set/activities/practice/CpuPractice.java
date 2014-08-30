@@ -1,6 +1,8 @@
 package com.kdoherty.set.activities.practice;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.TypedValue;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
 import com.kdoherty.set.activities.AbstractCpuActivity;
+import com.kdoherty.set.activities.CpuOver;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -26,29 +29,32 @@ public class CpuPractice extends AbstractCpuActivity {
     /** Keeps track of the number of Sets the user has found */
     private TextView score;
 
+    private long millisRemaining;
+
     private CountDownTimer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_practice, R.color.WHITE);
-        initTimer();
+        mTime = getIntent().getExtras().getLong(Constants.Keys.TIME);
+        initTimer(mTime);
         initCpuView();
         updateScore();
     }
 
-    private void initTimer() {
-            mTime = getIntent().getExtras().getLong(Constants.Keys.TIME);
+    private void initTimer(long time) {
             final SimpleDateFormat timeFormat = new SimpleDateFormat("m:ss",
                     Locale.getDefault());
-            String startTimeStr = timeFormat.format(mTime);
+            String startTimeStr = timeFormat.format(time);
 
             mTimerView = (TextView) findViewById(R.id.timerView);
             mTimerView.setText(startTimeStr);
 
-            mTimer = new CountDownTimer(mTime, 1000) {
+            mTimer = new CountDownTimer(time, 1000) {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
+                    millisRemaining = millisUntilFinished;
                     mTimerView.setText(timeFormat.format(millisUntilFinished));
                     if (millisUntilFinished <= 6000) {
                         mTimerView.setTextColor(getResources().getColor(
@@ -93,10 +99,11 @@ public class CpuPractice extends AbstractCpuActivity {
     @Override
     protected void finishGame() {
         Intent gameOver = new Intent(getApplicationContext(),
-                CpuPracticeOver.class);
+                CpuOver.class);
         gameOver.putExtra(Constants.Keys.USER_SCORE, mSetCount.get());
         gameOver.putExtra(Constants.Keys.USER_WRONG, mBadSetCount);
         gameOver.putExtra(Constants.Keys.CPU_SCORE, mCpuScore);
+        gameOver.putExtra(Constants.Keys.GAME_MODE, Constants.Modes.PRACTICE);
         startActivity(gameOver);
     }
 
@@ -114,5 +121,21 @@ public class CpuPractice extends AbstractCpuActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mTimer.cancel();
+        SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
+        prefs.edit().putLong(Constants.Keys.TIME, millisRemaining).commit();
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
+        long timeRemaining = prefs.getLong(Constants.Keys.TIME, 0l);
+        initTimer(timeRemaining);
     }
 }

@@ -2,6 +2,7 @@ package com.kdoherty.set.activities.race;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.TypedValue;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
 import com.kdoherty.set.activities.AbstractCpuActivity;
-import com.kdoherty.set.activities.practice.CpuPracticeOver;
+import com.kdoherty.set.activities.CpuOver;
 import com.kdoherty.set.model.Card;
 
 import java.text.SimpleDateFormat;
@@ -30,6 +31,9 @@ public class CpuRace extends AbstractCpuActivity {
             Locale.getDefault());
     String startTimeStr = timeFormat.format(0);
 
+    private Handler handler;
+    private long elapsedTime = 0l;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_race, R.color.WHITE);
@@ -41,7 +45,6 @@ public class CpuRace extends AbstractCpuActivity {
     }
 
     private void initTimer() {
-
         final SimpleDateFormat timeFormat = new SimpleDateFormat("m:ss",
                 Locale.getDefault());
         String startTimeStr = timeFormat.format(0);
@@ -49,14 +52,13 @@ public class CpuRace extends AbstractCpuActivity {
         mTimerView = (TextView) findViewById(R.id.timerView);
         mTimerView.setText(startTimeStr);
 
-        final Handler handler = new Handler();
-        final long startTimeMillis = System.currentTimeMillis();
+        handler = new Handler();
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                long elapsedTime = System.currentTimeMillis() - startTimeMillis;
+                elapsedTime += 100;
                 mTimerView.setText(timeFormat.format(elapsedTime));
-                handler.postDelayed(this, 1000);
+                handler.postDelayed(this, 100);
             }
         };
         handler.removeCallbacks(task);
@@ -129,10 +131,29 @@ public class CpuRace extends AbstractCpuActivity {
     @Override
     protected void finishGame() {
         Intent gameOver = new Intent(getApplicationContext(),
-                CpuPracticeOver.class);
+                CpuOver.class);
         gameOver.putExtra(Constants.Keys.USER_SCORE, mSetCount.get());
         gameOver.putExtra(Constants.Keys.USER_WRONG, mBadSetCount);
         gameOver.putExtra(Constants.Keys.CPU_SCORE, mCpuScore);
+        gameOver.putExtra(Constants.Keys.GAME_MODE, Constants.Modes.RACE);
         startActivity(gameOver);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        handler.removeCallbacksAndMessages(null);
+        handler = null;
+        SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
+        prefs.edit().putLong(Constants.Keys.TIME, elapsedTime).commit();
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
+        long time = prefs.getLong(Constants.Keys.TIME, 0l);
+        elapsedTime = time;
+        initTimer();
     }
 }
