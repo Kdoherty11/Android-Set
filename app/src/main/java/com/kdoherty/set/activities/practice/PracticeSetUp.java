@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.CheckedTextView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -17,25 +16,25 @@ import com.kdoherty.set.activities.ActivityUtils;
 
 public class PracticeSetUp extends Activity {
 
-    CheckedTextView cpuPlayerOpt;
-    Spinner timeSpinner;
-    Spinner difficultySpinner;
+    CheckedTextView mCpuPlayerOptionCtv;
+    Spinner mTimeSpinner;
+    Spinner mDifficultySpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice_set_up);
-        timeSpinner = (Spinner) findViewById(R.id.time_spinner);
-        difficultySpinner = (Spinner) findViewById(R.id.cpu_difficulty_spinner);
-        cpuPlayerOpt = (CheckedTextView) findViewById(R.id.cpu_player_chk_box);
-        cpuPlayerOpt.setOnClickListener(new View.OnClickListener() {
+        mTimeSpinner = (Spinner) findViewById(R.id.time_spinner);
+        mDifficultySpinner = (Spinner) findViewById(R.id.cpu_difficulty_spinner);
+        mCpuPlayerOptionCtv = (CheckedTextView) findViewById(R.id.cpu_player_chk_box);
+        mCpuPlayerOptionCtv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cpuPlayerOpt.toggle();
-                if (cpuPlayerOpt.isChecked()) {
-                    difficultySpinner.setVisibility(View.VISIBLE);
+                mCpuPlayerOptionCtv.toggle();
+                if (mCpuPlayerOptionCtv.isChecked()) {
+                    mDifficultySpinner.setVisibility(View.VISIBLE);
                 } else {
-                    difficultySpinner.setVisibility(View.INVISIBLE);
+                    mDifficultySpinner.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -43,14 +42,14 @@ public class PracticeSetUp extends Activity {
 
     public void onStartClick(View v) {
 
-        String timeSelected = String.valueOf(timeSpinner.getSelectedItem());
+        String timeSelected = String.valueOf(mTimeSpinner.getSelectedItem());
         if (timeSelected.equalsIgnoreCase("Select A Time")) {
             Toast.makeText(this, "Please select a time", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (cpuPlayerOpt.isChecked()) {
+        if (mCpuPlayerOptionCtv.isChecked()) {
             Intent countdownCpu = new Intent(getApplicationContext(), CpuPractice.class);
-            String difficultySelected = String.valueOf(difficultySpinner.getSelectedItem());
+            String difficultySelected = String.valueOf(mDifficultySpinner.getSelectedItem());
             if (difficultySelected.equalsIgnoreCase("Select A Difficulty")) {
                 Toast.makeText(this, "Please select a difficulty", Toast.LENGTH_SHORT).show();
                 return;
@@ -88,9 +87,5 @@ public class PracticeSetUp extends Activity {
         } else {
             return Integer.valueOf(time.substring(0, time.indexOf(" Minute"))) * 60000;
         }
-    }
-
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
     }
 }

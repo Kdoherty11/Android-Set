@@ -13,11 +13,10 @@
         android:layout_below="@+id/timerView"
         android:columnWidth="120dp"
         android:listSelector="@drawable/list_selector"
-        android:numColumns="auto_fit"
+        android:numColumns="3"
         android:stretchMode="spacingWidthUniform"
         android:paddingBottom="25dp"
-        android:verticalSpacing="10dp" >
-    </GridView>
+        android:verticalSpacing="10dp" />
 
     <Button
         android:id="@+id/solver_button"

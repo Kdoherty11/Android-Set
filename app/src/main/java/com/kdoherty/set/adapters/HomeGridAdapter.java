@@ -16,19 +16,19 @@ import com.kdoherty.set.R;
 import com.kdoherty.set.activities.HomeScreen;
 
 public class HomeGridAdapter extends BaseAdapter {
-    private Context mContext;
-    private final String[] web;
-    private final int[] Imageid;
+    private final Context mContext;
+    private final String[] mCaptions;
+    private final int[] mImageIds;
 
-    public HomeGridAdapter(Context c, String[] web, int[] Imageid) {
-        mContext = c;
-        this.Imageid = Imageid;
-        this.web = web;
+    public HomeGridAdapter(Context context, String[] captions, int[] imageIds) {
+        this.mContext = context;
+        this.mCaptions = captions;
+        this.mImageIds = imageIds;
     }
 
     @Override
     public int getCount() {
-        return web.length;
+        return mCaptions.length;
     }
 
     @Override
@@ -49,10 +49,10 @@ public class HomeGridAdapter extends BaseAdapter {
         if (convertView == null) {
             grid = new View(mContext);
             grid = inflater.inflate(R.layout.grid_item, null);
-            TextView textView = (TextView) grid.findViewById(R.id.item_text);
+            TextView captionTv = (TextView) grid.findViewById(R.id.item_text);
             ImageView imageView = (ImageView) grid.findViewById(R.id.item_image);
-            textView.setText(web[position]);
-            imageView.setImageResource(Imageid[position]);
+            captionTv.setText(mCaptions[position]);
+            imageView.setImageResource(mImageIds[position]);
             grid.setMinimumHeight((HomeScreen.SCREEN_HEIGHT / 2) - HomeScreen.SCREEN_HEIGHT / 15);
         } else {
             grid = (View) convertView;

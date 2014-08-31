@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -21,14 +20,13 @@ import android.widget.TextView;
 
 import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
-import com.kdoherty.set.adapters.DbAdapter;
+import com.kdoherty.set.services.SetApi;
 
-import java.io.UnsupportedEncodingException;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class SignUp extends Activity {
-
-    /** DataBase where we will store the new account */
-    private DbAdapter mDb;
 
     /** The new account user name */
     private String mUserName;
@@ -36,11 +34,11 @@ public class SignUp extends Activity {
     private String mPassword;
 
     /** UI Reference to the user name */
-    private EditText mUserNameView;
+    private EditText mUserNameEt;
     /** UI Reference to the password */
-    private EditText mPasswordView;
+    private EditText mPasswordEt;
     /** UI Reference to confirm password */
-    private EditText mConfirmPasswordView;
+    private EditText mConfirmPasswordEt;
 
     /**
      * Initializes the UI references and opens the database
@@ -49,11 +47,11 @@ public class SignUp extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        mUserNameView = (EditText) findViewById(R.id.etUserName);
-        mUserNameView.setText(mUserName);
+        mUserNameEt = (EditText) findViewById(R.id.etUserName);
+        mUserNameEt.setText(mUserName);
 
-        mPasswordView = (EditText) findViewById(R.id.etPass);
-        mPasswordView
+        mPasswordEt = (EditText) findViewById(R.id.etPass);
+        mPasswordEt
                 .setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView textView, int id,
@@ -64,12 +62,10 @@ public class SignUp extends Activity {
                         return false;
                     }
                 });
-        mConfirmPasswordView = (EditText) findViewById(R.id.etConfirmPass);
+        mConfirmPasswordEt = (EditText) findViewById(R.id.etConfirmPass);
 
         // Show the Up button in the action bar.
         setupActionBar();
-        mDb = new DbAdapter(this);
-        mDb.open();
     }
 
     /**
@@ -116,60 +112,49 @@ public class SignUp extends Activity {
     }
 
     /**
-     * Closes the database
-     */
-    public void onDestroy() {
-        super.onDestroy();
-        mDb.close();
-    }
-
-    /**
      * Attempts to create an account.
      * If the credentials are valid and the user name
      * is not taken, the credentials are added to the database.
      */
     public void attemptSignUp() {
+        ActivityUtils.checkOnline(this);
         // Reset errors.
-        mUserNameView.setError(null);
-        mPasswordView.setError(null);
-        mConfirmPasswordView.setError(null);
+        mUserNameEt.setError(null);
+        mPasswordEt.setError(null);
+        mConfirmPasswordEt.setError(null);
 
         // Store values at the time of the login attempt.
-        mUserName = mUserNameView.getText().toString();
-        mPassword = mPasswordView.getText().toString();
+        mUserName = mUserNameEt.getText().toString();
+        mPassword = mPasswordEt.getText().toString();
         /* The new account password confirmed */
-        String mConfirmPassword = mConfirmPasswordView.getText().toString();
+        String mConfirmPassword = mConfirmPasswordEt.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password.
         if (TextUtils.isEmpty(mPassword)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
+            mPasswordEt.setError(getString(R.string.error_field_required));
+            focusView = mPasswordEt;
             cancel = true;
         } else if (mPassword.length() < 4) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+            mPasswordEt.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordEt;
             cancel = true;
         } else if (!mConfirmPassword.equals(mPassword)) {
-            mConfirmPasswordView.setError(getString(R.string.error_passwords_must_match));
-            focusView = mConfirmPasswordView;
+            mConfirmPasswordEt.setError(getString(R.string.error_passwords_must_match));
+            focusView = mConfirmPasswordEt;
             cancel = true;
         }
 
         // Check for a valid user name.
         if (TextUtils.isEmpty(mUserName)) {
-            mUserNameView.setError(getString(R.string.error_field_required));
-            focusView = mUserNameView;
+            mUserNameEt.setError(getString(R.string.error_field_required));
+            focusView = mUserNameEt;
             cancel = true;
         } else if (mUserName.length() < 4) {
-            mUserNameView.setError(getString(R.string.error_invalid_email));
-            focusView = mUserNameView;
-            cancel = true;
-        } else if (!mDb.getPassword(mUserName).equals("NOT EXIST")) {
-            mUserNameView.setError(getString(R.string.user_name_exists));
-            focusView = mUserNameView;
+            mUserNameEt.setError(getString(R.string.error_invalid_email));
+            focusView = mUserNameEt;
             cancel = true;
         }
 
@@ -178,22 +163,28 @@ public class SignUp extends Activity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            byte[] data;
-            try {
-                data = mPassword.getBytes("UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Problem encoding password to UTF-8");
-            }
-            String base64 = Base64.encodeToString(data, Base64.DEFAULT);
-            Log.d("kdoherty", "encoding password " + mPassword + " into " + base64 + " and inserting into DB");
-            mDb.insertRow(mUserName, base64);
-            SharedPreferences loginPreferences = getSharedPreferences(Constants.Keys.SPF_LOGIN, Context.MODE_PRIVATE);
-            loginPreferences.edit().clear().commit();
-            SharedPreferences usernamePrefs = getSharedPreferences(Constants.Keys.SPF_USERNAME, Context.MODE_PRIVATE);
-            usernamePrefs.edit().putString(Constants.Keys.USERNAME, mUserName).commit();
-            Intent homeScreen = new Intent(getApplicationContext(), HomeScreen.class);
-            startActivity(homeScreen);
+            SetApi.INSTANCE.addUser(mUserName, mPassword, new Callback<Response>() {
+                @Override
+                public void success(Response result, Response response) {
+                    String res = ActivityUtils.getResponseStr(result);
+                    if (res.equalsIgnoreCase("\"Taken\"")) {
+                        mUserNameEt.setError(getString(R.string.user_name_exists));
+                        mUserNameEt.requestFocus();
+                    } else {
+                        SharedPreferences loginPreferences = getSharedPreferences(Constants.Keys.SPF_LOGIN, Context.MODE_PRIVATE);
+                        loginPreferences.edit().clear().commit();
+                        SharedPreferences usernamePrefs = getSharedPreferences(Constants.Keys.SPF_USERNAME, Context.MODE_PRIVATE);
+                        usernamePrefs.edit().putString(Constants.Keys.USERNAME, mUserName).commit();
+                        Intent homeScreen = new Intent(getApplicationContext(), HomeScreen.class);
+                        startActivity(homeScreen);
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.e(Constants.TAG, "Failure adding user " + error.getMessage());
+                }
+            });
         }
     }
 }

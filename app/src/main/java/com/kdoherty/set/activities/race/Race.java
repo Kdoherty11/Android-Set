@@ -21,26 +21,22 @@ import java.util.Locale;
 
 public class Race extends AbstractSetActivity {
 
-    private TextView mTimerView;
-    private TextView score;
-
-    private long elapsedTime = 0l;
-
-    private int target;
-
-    private Handler handler;
-
-    final SimpleDateFormat timeFormat = new SimpleDateFormat("m:ss",
+    private TextView mTimerTv;
+    private TextView mScoreTv;
+    private long mElapsedTime = 0l;
+    private int mTarget;
+    private Handler mTimeHandler;
+    private final SimpleDateFormat mTimeFormat = new SimpleDateFormat("m:ss",
             Locale.getDefault());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_race, R.color.WHITE);
         initGameView(new Game());
-        score = (TextView) findViewById(R.id.score);
+        mScoreTv = (TextView) findViewById(R.id.score);
         updateScore();
         initTimer();
-        target = getIntent().getExtras().getInt(Constants.Keys.TARGET);
+        mTarget = getIntent().getExtras().getInt(Constants.Keys.TARGET);
         initHighScore();
     }
 
@@ -49,7 +45,7 @@ public class Race extends AbstractSetActivity {
         boolean setFound = super.posSetFound(cards);
         if (setFound) {
             updateScore();
-            if (mSetCount.get() == target) {
+            if (mSetCount.get() == mTarget) {
                 finishGame();
             }
         }
@@ -57,35 +53,33 @@ public class Race extends AbstractSetActivity {
     }
 
     private void initTimer() {
-        final SimpleDateFormat timeFormat = new SimpleDateFormat("m:ss",
-                Locale.getDefault());
-        String startTimeStr = timeFormat.format(0);
+        String startTimeStr = mTimeFormat.format(0);
 
-        mTimerView = (TextView) findViewById(R.id.timerView);
-        mTimerView.setText(startTimeStr);
+        mTimerTv = (TextView) findViewById(R.id.timerView);
+        mTimerTv.setText(startTimeStr);
 
-        handler = new Handler();
+        mTimeHandler = new Handler();
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                elapsedTime += 100;
-                mTimerView.setText(timeFormat.format(elapsedTime));
-                handler.postDelayed(this, 100);
+                mElapsedTime += 100;
+                mTimerTv.setText(mTimeFormat.format(mElapsedTime));
+                mTimeHandler.postDelayed(this, 100);
             }
         };
-        handler.removeCallbacks(task);
-        handler.post(task);
+        mTimeHandler.removeCallbacks(task);
+        mTimeHandler.post(task);
     }
 
     private void initHighScore() {
         TextView highScoreView = (TextView) findViewById(R.id.highScore);
         SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_HIGHSCORE, Context.MODE_PRIVATE);
-        long highScore = prefs.getLong(Constants.Keys.RACE_HIGH_SCORE + String.valueOf(target), 0);
-        highScoreView.setText("High Score: " + timeFormat.format(highScore));
+        long highScore = prefs.getLong(Constants.Keys.RACE_HIGH_SCORE + String.valueOf(mTarget), 0);
+        highScoreView.setText("High Score: " + mTimeFormat.format(highScore));
     }
 
     void updateScore() {
-        score.setText("Score: " + mSetCount);
+        mScoreTv.setText("Score: " + mSetCount);
     }
 
     @Override
@@ -110,19 +104,19 @@ public class Race extends AbstractSetActivity {
     @Override
     protected void finishGame() {
         Intent gameOver = new Intent(getApplicationContext(), RaceOver.class);
-        gameOver.putExtra(Constants.Keys.TIME, mTimerView.getText().toString());
-        gameOver.putExtra(Constants.Keys.TARGET, target);
-        gameOver.putExtra(Constants.Keys.ELAPSED_TIME_RACE, elapsedTime);
+        gameOver.putExtra(Constants.Keys.TIME, mTimerTv.getText().toString());
+        gameOver.putExtra(Constants.Keys.TARGET, mTarget);
+        gameOver.putExtra(Constants.Keys.ELAPSED_TIME_RACE, mElapsedTime);
         startActivity(gameOver);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        handler.removeCallbacksAndMessages(null);
-        handler = null;
+        mTimeHandler.removeCallbacksAndMessages(null);
+        mTimeHandler = null;
         SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
-        prefs.edit().putLong(Constants.Keys.TIME, elapsedTime).commit();
+        prefs.edit().putLong(Constants.Keys.TIME, mElapsedTime).commit();
     }
 
     @Override
@@ -130,7 +124,7 @@ public class Race extends AbstractSetActivity {
         super.onRestart();
         SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
         long time = prefs.getLong(Constants.Keys.TIME, 0l);
-        elapsedTime = time;
+        mElapsedTime = time;
         initTimer();
     }
 }

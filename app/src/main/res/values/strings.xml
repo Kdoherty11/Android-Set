@@ -9,6 +9,22 @@
     <string name="game_over">Game Over!</string>
     <string name="play_again">Play again</string>
     <string name="home">Home</string>
+
+    <string name="cpu_practice_computer_score">Computer: </string>
+
+    <string name="practice_high_score">High Score: </string>
+    <string name="practice_user_score">Score: </string>
+
+    <string name="practice_over_num_sets">Sets </string>
+    <string name="practice_over_num_misses">Misses </string>
+    <string name="practice_over_sets_per_min">Sets Per Minute </string>
+    <string name="practice_over_score">Score </string>
+    <string name="practice_over_accuracy">Accuracy </string>
+    <string name="practice_over_high_score">HIGH SCORE</string>
+    <string name="practice_over_not_online_leaderboard_submit">Must be online to submit to leaderboard</string>
+    <string name="practice_over_leaderboard_submit_success">Submitted score to leaderboard!</string>
+
+
     <string name="time_spinner_prompt">Select a time</string>
     <string name="race_target_prompt">Select a target</string>
     <string name="difficulty_spinner_prompt">Select a difficulty</string>
@@ -35,6 +51,7 @@
         <item>10 Minutes</item>
         <item>15 Minutes</item>
     </string-array>
+
     <string-array name="race_targets">
         <item>Select A Target</item>
         <item>1 Set</item>

@@ -8,12 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.kdoherty.set.R;
+import com.kdoherty.set.model.Card;
 import com.kdoherty.set.model.Card.Color;
 import com.kdoherty.set.model.Card.Fill;
 import com.kdoherty.set.model.Card.Shape;
-import com.kdoherty.set.R;
-import com.kdoherty.set.model.Card;
-import com.kdoherty.set.model.Game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,27 +26,28 @@ public class ImageAdapter extends BaseAdapter {
 
     private Context mContext;
 
-    private Game mGame;
+//    private Game mGame;
 
-    private List<Integer> mCardIds;
+    private List<Integer> mCardIds = new ArrayList<>();
+
+    private List<Card> mCards;
 
     private static Map<Card, Integer> sCardImages;
 
     private LayoutInflater mInflater;
 
     // Constructor
-    public ImageAdapter(Context c, Game game) {
-        this.mGame = game;
-        mContext = c;
+    public ImageAdapter(Context context, List<Card> cards) {
+        this.mCards = cards;
+        this.mContext = context;
         this.mInflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mCardIds = new ArrayList<>();
         update();
     }
 
     public void update() {
         mCardIds.clear();
-        for (Card card : mGame.getActiveCards()) {
+        for (Card card : mCards) {
             mCardIds.add(getCardImages().get(card));
         }
         notifyDataSetChanged();
@@ -87,16 +87,16 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView card;
+        ImageView cardIv;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.card, parent, false);
-            card = (ImageView) convertView.findViewById(R.id.cardImgView);
-            convertView.setTag(new ViewHolder(card));
+            cardIv = (ImageView) convertView.findViewById(R.id.cardImgView);
+            convertView.setTag(new ViewHolder(cardIv));
         } else {
             ViewHolder viewHolder = (ViewHolder) convertView.getTag();
-            card = viewHolder.card;
+            cardIv = viewHolder.card;
         }
-        card.setImageResource(mCardIds.get(position));
+        cardIv.setImageResource(mCardIds.get(position));
         return convertView;
     }
 

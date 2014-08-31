@@ -2,6 +2,7 @@ package com.kdoherty.set.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +25,7 @@ import retrofit.client.Response;
 
 public class Leaderboard extends Activity {
 
-    private Callback<List<LeaderboardEntry>> callback;
+    private Callback<List<LeaderboardEntry>> mCallback;
 
     private Bundle mBundle;
 
@@ -36,7 +37,7 @@ public class Leaderboard extends Activity {
         mBundle = getIntent().getExtras();
         final String gameMode = mBundle.getString(Constants.Keys.GAME_MODE);
 
-        callback = new Callback<List<LeaderboardEntry>>() {
+        mCallback = new Callback<List<LeaderboardEntry>>() {
             @Override
             public void success(List<LeaderboardEntry> entries, Response response) {
                 findViewById(R.id.pLeaderboard_progressBar).setVisibility(View.GONE);
@@ -46,8 +47,7 @@ public class Leaderboard extends Activity {
 
             @Override
             public void failure(RetrofitError error) {
-                System.out.println("failure getting leaderboard");
-                System.out.println(error.getMessage());
+                Log.e(Constants.TAG, "Failure getting leaderboard: " + error.getMessage());
             }
         };
 
@@ -66,7 +66,7 @@ public class Leaderboard extends Activity {
 
         long timeMillis = getIntent().getExtras().getLong(Constants.Keys.TIME);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(timeMillis);
-        api.getPracticeLeaderboard(minutes, callback);
+        api.getPracticeLeaderboard(minutes, mCallback);
 
         findViewById(R.id.pLeaderboard_progressBar).setVisibility(View.VISIBLE);
     }
@@ -78,7 +78,7 @@ public class Leaderboard extends Activity {
         SetApi api = adapter.create(SetApi.class);
 
         int target = getIntent().getExtras().getInt(Constants.Keys.TARGET);
-        api.getRaceLeaderboard(target, callback);
+        api.getRaceLeaderboard(target, mCallback);
 
         ((TextView) findViewById(R.id.header).findViewById(R.id.scoreHeader)).setText("Time");
         findViewById(R.id.pLeaderboard_progressBar).setVisibility(View.VISIBLE);

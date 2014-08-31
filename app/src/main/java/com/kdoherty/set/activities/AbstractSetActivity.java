@@ -25,9 +25,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class AbstractSetActivity extends Activity {
 
     /** UI Reference to the grid view holding the card images */
-    protected GridView mGridView;
+    protected GridView mCardsGv;
     /** Image adapter for card images */
-    protected ImageAdapter mAdapter;
+    protected ImageAdapter mCardAdapter;
     /** The Set mGame we are representing in this activity */
     protected Game mGame;
     /** The number of correct sets the user found. Using AtomicInteger because this can be modified
@@ -48,20 +48,20 @@ public abstract class AbstractSetActivity extends Activity {
         setContentView(layoutId);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mBackgroundColor = getResources().getColor(backgroundColorId);
-        mGridView = (GridView) findViewById(R.id.card_grid);
+        mCardsGv = (GridView) findViewById(R.id.card_grid);
     }
 
     protected void initGameView(Game game) {
         this.mGame = game;
-        mAdapter = new ImageAdapter(this, game);
-        mGridView.setAdapter(mAdapter);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mCardAdapter = new ImageAdapter(this, game.getActiveCards());
+        mCardsGv.setAdapter(mCardAdapter);
+        mCardsGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view,
                                     int i, long l) {
                 addToPosSet(
-                        ImageAdapter.getCard((Integer) mAdapter.getItem(i)),
+                        ImageAdapter.getCard((Integer) mCardAdapter.getItem(i)),
                         view);
             }
 
@@ -106,7 +106,7 @@ public abstract class AbstractSetActivity extends Activity {
             while (SetSolver.findSet(mGame.getActiveCards()) == null) {
                 mGame.deal(Set.SIZE);
             }
-            mAdapter.update();
+            mCardAdapter.update();
         } else {
             Toast.makeText(this, "Not a Set!", Toast.LENGTH_SHORT).show();
             mBadSetCount++;

@@ -23,21 +23,17 @@ import java.util.Locale;
 public class CpuPractice extends AbstractCpuActivity {
 
     /** UI Reference to the timer */
-    private TextView mTimerView;
-    /** The time in milliseconds of how long the user has to find sets */
-    private long mTime;
-    /** Keeps track of the number of Sets the user has found */
-    private TextView score;
-
-    private long millisRemaining;
-
+    private TextView mTimerTv;
+    /** Time left in this game in milliseconds */
+    private long mMillisRemaining;
+    /** Reference to the countdown timer */
     private CountDownTimer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_practice, R.color.WHITE);
-        mTime = getIntent().getExtras().getLong(Constants.Keys.TIME);
-        initTimer(mTime);
+        long time = getIntent().getExtras().getLong(Constants.Keys.TIME);
+        initTimer(time);
         initCpuView();
         updateScore();
     }
@@ -47,17 +43,17 @@ public class CpuPractice extends AbstractCpuActivity {
                     Locale.getDefault());
             String startTimeStr = timeFormat.format(time);
 
-            mTimerView = (TextView) findViewById(R.id.timerView);
-            mTimerView.setText(startTimeStr);
+            mTimerTv = (TextView) findViewById(R.id.timerView);
+            mTimerTv.setText(startTimeStr);
 
             mTimer = new CountDownTimer(time, 1000) {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    millisRemaining = millisUntilFinished;
-                    mTimerView.setText(timeFormat.format(millisUntilFinished));
+                    mMillisRemaining = millisUntilFinished;
+                    mTimerTv.setText(timeFormat.format(millisUntilFinished));
                     if (millisUntilFinished <= 6000) {
-                        mTimerView.setTextColor(getResources().getColor(
+                        mTimerTv.setTextColor(getResources().getColor(
                                 R.color.red_cherry));
                     }
                 }
@@ -74,26 +70,26 @@ public class CpuPractice extends AbstractCpuActivity {
         View solverButton = findViewById(R.id.solver_button);
         ((RelativeLayout)solverButton.getParent()).removeView(solverButton);
 
-        score = (TextView) findViewById(R.id.score);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(score.getLayoutParams());
+        mScoreTv = (TextView) findViewById(R.id.score);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mScoreTv.getLayoutParams());
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         params.addRule(RelativeLayout.LEFT_OF, R.id.centerPoint);
-        score.setLayoutParams(params);
-        score.setPadding(25, 15, 0, 15);
+        mScoreTv.setLayoutParams(params);
+        mScoreTv.setPadding(25, 15, 0, 15);
 
         RelativeLayout rLayout = (RelativeLayout) findViewById(R.id.timed_practice_layout);
 
-        RelativeLayout.LayoutParams cpuParams = new RelativeLayout.LayoutParams(score.getLayoutParams());
+        RelativeLayout.LayoutParams cpuParams = new RelativeLayout.LayoutParams(mScoreTv.getLayoutParams());
         cpuParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         cpuParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         params.addRule(RelativeLayout.RIGHT_OF, R.id.centerPoint);
-        mCpuScoreView = new TextView(this);
-        mCpuScoreView.setLayoutParams(cpuParams);
-        mCpuScoreView.setText("Computer: " + mCpuScore);
-        mCpuScoreView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
-        mCpuScoreView.setPadding(0, 15, 25, 15);
-        rLayout.addView(mCpuScoreView);
+        mCpuScoreTv = new TextView(this);
+        mCpuScoreTv.setLayoutParams(cpuParams);
+        mCpuScoreTv.setText(getString(R.string.cpu_practice_computer_score) + mCpuScore);
+        mCpuScoreTv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+        mCpuScoreTv.setPadding(0, 15, 25, 15);
+        rLayout.addView(mCpuScoreTv);
     }
 
     @Override
@@ -128,7 +124,7 @@ public class CpuPractice extends AbstractCpuActivity {
         super.onStop();
         mTimer.cancel();
         SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
-        prefs.edit().putLong(Constants.Keys.TIME, millisRemaining).commit();
+        prefs.edit().putLong(Constants.Keys.TIME, mMillisRemaining).commit();
     }
 
     @Override

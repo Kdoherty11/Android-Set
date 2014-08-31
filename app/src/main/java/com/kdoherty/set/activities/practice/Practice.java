@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
@@ -27,22 +26,18 @@ import java.util.Locale;
 public class Practice extends AbstractSetActivity {
 
     /** UI Reference to the timer */
-    protected TextView mTimerView;
+    protected TextView mTimerTv;
     /** The time in milliseconds of how long the user has to find sets */
     protected long mTime;
     /** Keeps track of the number of Sets the user has found */
-    protected TextView score;
-
+    protected TextView mScoreTv;
     protected CountDownTimer mTimer;
-
-    private long millisRemaining;
-
-    boolean solverPressed = false;
+    private long mMillisRemaining;
+    boolean mSolverPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_practice, R.color.WHITE);
-        System.out.println("On create called");
         mTime = getIntent().getExtras().getLong(Constants.Keys.TIME);
         initTimer(mTime);
         initGameView(new Game());
@@ -62,7 +57,7 @@ public class Practice extends AbstractSetActivity {
     @Override
     protected void initGameView(Game game) {
         super.initGameView(game);
-        score = (TextView) findViewById(R.id.score);
+        mScoreTv = (TextView) findViewById(R.id.score);
         updateScore();
     }
 
@@ -70,20 +65,20 @@ public class Practice extends AbstractSetActivity {
         TextView highScoreView = (TextView) findViewById(R.id.highScore);
         SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_HIGHSCORE, Context.MODE_PRIVATE);
         int highScore = prefs.getInt(Constants.Keys.PRACTICE_HIGH_SCORE + String.valueOf(mTime), 0);
-        highScoreView.setText("High Score: " + highScore);
+        highScoreView.setText(getString(R.string.practice_high_score) + highScore);
     }
 
     void updateScore() {
-        score.setText("Score: " + mSetCount);
+        mScoreTv.setText(getString(R.string.practice_user_score) + mSetCount);
     }
 
     @Override
     protected boolean posSetFound(Set set) {
         boolean setFound = super.posSetFound(set);
         if (setFound) {
-            if (solverPressed) {
+            if (mSolverPressed) {
                 mSetCount.decrementAndGet();
-                solverPressed = false;
+                mSolverPressed = false;
             } else {
                 updateScore();
             }
@@ -96,17 +91,17 @@ public class Practice extends AbstractSetActivity {
                 Locale.getDefault());
         String startTimeStr = timeFormat.format(time);
 
-        mTimerView = (TextView) findViewById(R.id.timerView);
-        mTimerView.setText(startTimeStr);
+        mTimerTv = (TextView) findViewById(R.id.timerView);
+        mTimerTv.setText(startTimeStr);
 
         mTimer = new CountDownTimer(time, 1000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                millisRemaining = millisUntilFinished;
-                mTimerView.setText(timeFormat.format(millisUntilFinished));
+                mMillisRemaining = millisUntilFinished;
+                mTimerTv.setText(timeFormat.format(millisUntilFinished));
                 if (millisUntilFinished <= 6000) {
-                    mTimerView.setTextColor(getResources().getColor(
+                    mTimerTv.setTextColor(getResources().getColor(
                             R.color.red_cherry));
                 }
             }
@@ -129,20 +124,17 @@ public class Practice extends AbstractSetActivity {
     public void onSolverButtonClick(View view) {
         Set set = SetSolver.findSet(mGame.getActiveCards());
         if (set == null) {
-            Toast.makeText(this, "There are no sets!",
-                    Toast.LENGTH_SHORT).show();
+            throw new IllegalStateException("There are no sets");
         } else {
             mPosSet.clear();
             unhighlightAll();
             for (Card card : set) {
-                mHighlight.add(mAdapter.getCardView(mGridView, ImageAdapter
+                mHighlight.add(mCardAdapter.getCardView(mCardsGv, ImageAdapter
                         .getCardImages().get(card)));
             }
             highlightAll(getResources().getColor(R.color.red_cherry));
         }
-
-        solverPressed = true;
-
+        mSolverPressed = true;
     }
 
     @Override
@@ -162,17 +154,11 @@ public class Practice extends AbstractSetActivity {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        System.out.println("On Pause called");
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         mTimer.cancel();
         SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
-        prefs.edit().putLong(Constants.Keys.TIME, millisRemaining).commit();
+        prefs.edit().putLong(Constants.Keys.TIME, mMillisRemaining).commit();
     }
 
     @Override

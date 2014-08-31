@@ -23,16 +23,12 @@ import java.util.Locale;
 
 public class CpuRace extends AbstractCpuActivity {
 
-    private TextView mTimerView;
+    private TextView mTimerTv;
 
-    private int target;
+    private int mTarget;
 
-    final SimpleDateFormat timeFormat = new SimpleDateFormat("m:ss",
-            Locale.getDefault());
-    String startTimeStr = timeFormat.format(0);
-
-    private Handler handler;
-    private long elapsedTime = 0l;
+    private Handler mTimeHandler;
+    private long mElapsedTime = 0l;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +36,7 @@ public class CpuRace extends AbstractCpuActivity {
         initTimer();
         initCpuView();
         updateScore();
-        score = (TextView) findViewById(R.id.score);
-        target = getIntent().getExtras().getInt(Constants.Keys.TARGET);
+        mTarget = getIntent().getExtras().getInt(Constants.Keys.TARGET);
     }
 
     private void initTimer() {
@@ -49,43 +44,43 @@ public class CpuRace extends AbstractCpuActivity {
                 Locale.getDefault());
         String startTimeStr = timeFormat.format(0);
 
-        mTimerView = (TextView) findViewById(R.id.timerView);
-        mTimerView.setText(startTimeStr);
+        mTimerTv = (TextView) findViewById(R.id.timerView);
+        mTimerTv.setText(startTimeStr);
 
-        handler = new Handler();
+        mTimeHandler = new Handler();
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                elapsedTime += 100;
-                mTimerView.setText(timeFormat.format(elapsedTime));
-                handler.postDelayed(this, 100);
+                mElapsedTime += 100;
+                mTimerTv.setText(timeFormat.format(mElapsedTime));
+                mTimeHandler.postDelayed(this, 100);
             }
         };
-        handler.removeCallbacks(task);
-        handler.post(task);
+        mTimeHandler.removeCallbacks(task);
+        mTimeHandler.post(task);
     }
 
     private void initCpuView() {
-        score = (TextView) findViewById(R.id.score);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(score.getLayoutParams());
+        mScoreTv = (TextView) findViewById(R.id.score);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mScoreTv.getLayoutParams());
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         params.addRule(RelativeLayout.LEFT_OF, R.id.centerPoint);
-        score.setLayoutParams(params);
-        score.setPadding(25, 15, 0, 15);
+        mScoreTv.setLayoutParams(params);
+        mScoreTv.setPadding(25, 15, 0, 15);
 
         RelativeLayout rLayout = (RelativeLayout) findViewById(R.id.race_layout);
 
-        RelativeLayout.LayoutParams cpuParams = new RelativeLayout.LayoutParams(score.getLayoutParams());
+        RelativeLayout.LayoutParams cpuParams = new RelativeLayout.LayoutParams(mScoreTv.getLayoutParams());
         cpuParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         cpuParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         params.addRule(RelativeLayout.RIGHT_OF, R.id.centerPoint);
-        mCpuScoreView = new TextView(this);
-        mCpuScoreView.setLayoutParams(cpuParams);
-        mCpuScoreView.setText("Computer: " + mCpuScore);
-        mCpuScoreView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
-        mCpuScoreView.setPadding(0, 15, 25, 15);
-        rLayout.addView(mCpuScoreView);
+        mCpuScoreTv = new TextView(this);
+        mCpuScoreTv.setLayoutParams(cpuParams);
+        mCpuScoreTv.setText("Computer: " + mCpuScore);
+        mCpuScoreTv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+        mCpuScoreTv.setPadding(0, 15, 25, 15);
+        rLayout.addView(mCpuScoreTv);
     }
 
 
@@ -113,7 +108,7 @@ public class CpuRace extends AbstractCpuActivity {
         boolean setFound = super.posSetFound(cards);
         if (setFound) {
             updateScore();
-            if (mSetCount.get() == target) {
+            if (mSetCount.get() == mTarget) {
                 finishGame();
             }
         }
@@ -123,7 +118,7 @@ public class CpuRace extends AbstractCpuActivity {
     @Override
     protected void onSetReceive(Context context, Intent intent) {
         super.onSetReceive(context, intent);
-        if (mCpuScore == target) {
+        if (mCpuScore == mTarget) {
             finishGame();
         }
     }
@@ -142,10 +137,10 @@ public class CpuRace extends AbstractCpuActivity {
     @Override
     public void onStop() {
         super.onStop();
-        handler.removeCallbacksAndMessages(null);
-        handler = null;
+        mTimeHandler.removeCallbacksAndMessages(null);
+        mTimeHandler = null;
         SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
-        prefs.edit().putLong(Constants.Keys.TIME, elapsedTime).commit();
+        prefs.edit().putLong(Constants.Keys.TIME, mElapsedTime).commit();
     }
 
     @Override
@@ -153,7 +148,7 @@ public class CpuRace extends AbstractCpuActivity {
         super.onRestart();
         SharedPreferences prefs = getSharedPreferences(Constants.Keys.SPF_GAME_STATE, Context.MODE_PRIVATE);
         long time = prefs.getLong(Constants.Keys.TIME, 0l);
-        elapsedTime = time;
+        mElapsedTime = time;
         initTimer();
     }
 }

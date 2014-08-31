@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
@@ -46,17 +48,19 @@ public class RaceOver extends Activity implements View.OnClickListener {
             edit.putLong(Constants.Keys.RACE_HIGH_SCORE + String.valueOf(mTarget), elapsedTime);
             edit.commit();
             ((TextView) findViewById(R.id.gameOver)).setText("HIGH SCORE");
-            SetApi.INSTANCE.insertRaceEntry(mTarget, ActivityUtils.getUsername(this), elapsedTime, new Callback<Response>() {
-                @Override
-                public void success(Response response, Response response2) {
-                    System.out.println("success submitting race score");
-                }
+            if (ActivityUtils.checkOnline(this, "Must be online to submit to leaderboard")) {
+                SetApi.INSTANCE.insertRaceEntry(mTarget, ActivityUtils.getUsername(this), elapsedTime, new Callback<Response>() {
+                    @Override
+                    public void success(Response response, Response response2) {
+                        Toast.makeText(RaceOver.this, "Submitted score to leaderboard!", Toast.LENGTH_SHORT).show();
+                    }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    System.out.println("failure submitting race score");
-                }
-            });
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(Constants.TAG, "Failure submitting to leaderboard " + error.getMessage());
+                    }
+                });
+            }
         }
 
         findViewById(R.id.restart).setOnClickListener(this);

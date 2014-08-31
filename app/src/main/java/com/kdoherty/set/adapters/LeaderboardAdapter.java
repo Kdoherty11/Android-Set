@@ -20,16 +20,14 @@ import java.util.Locale;
  */
 public class LeaderboardAdapter extends ArrayAdapter<LeaderboardEntry> {
 
-    private Context context;
-    private List<LeaderboardEntry> entries;
-    private String gameMode;
+    private List<LeaderboardEntry> mEntries;
+    private String mGameMode;
     private LayoutInflater mInflater;
 
     public LeaderboardAdapter(Context context, int resource, List<LeaderboardEntry> entries, String gameMode) {
         super(context, resource, entries);
-        this.context = context;
-        this.entries = entries;
-        this.gameMode = gameMode;
+        this.mEntries = entries;
+        this.mGameMode = gameMode;
         this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -67,11 +65,11 @@ public class LeaderboardAdapter extends ArrayAdapter<LeaderboardEntry> {
             scoreTv = viewHolder.scoreTv;
         }
 
-        LeaderboardEntry entry = entries.get(position);
+        LeaderboardEntry entry = mEntries.get(position);
 
         long score = entry.getScore();
         String scoreString;
-        if (gameMode.equals(Constants.Modes.PRACTICE)) {
+        if (mGameMode.equals(Constants.Modes.PRACTICE)) {
             scoreString = String.valueOf(score);
         } else {
             final SimpleDateFormat timeFormat = new SimpleDateFormat("m:ss",

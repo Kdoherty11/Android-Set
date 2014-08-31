@@ -2,6 +2,7 @@ package com.kdoherty.set.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,9 +28,6 @@ import com.kdoherty.set.model.Games;
 import com.kdoherty.set.model.Player;
 import com.kdoherty.set.services.SetApi;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
@@ -59,7 +57,7 @@ public class Multiplayer extends AbstractSetActivity {
     private List<TextView> mPlayerViews;
     private int mPlayerCount;
 
-    private ProgressBar mSpinner;
+    private ProgressBar mProgressSpinner;
     private TextView mFindingGameTv;
 
     @Override
@@ -81,22 +79,22 @@ public class Multiplayer extends AbstractSetActivity {
     }
 
     private void showProgressSpinner() {
-        if (mSpinner == null || mFindingGameTv == null) {
-            mSpinner = (ProgressBar) findViewById(R.id.progressBar);
+        if (mProgressSpinner == null || mFindingGameTv == null) {
+            mProgressSpinner = (ProgressBar) findViewById(R.id.progressBar);
             mFindingGameTv = (TextView) findViewById(R.id.findingGame);
         }
-        mGridView.setVisibility(View.GONE);
+        mCardsGv.setVisibility(View.GONE);
         mPlayersLayout.setVisibility(View.GONE);
-        mSpinner.setVisibility(View.VISIBLE);
+        mProgressSpinner.setVisibility(View.VISIBLE);
         mFindingGameTv.setVisibility(View.VISIBLE);
     }
 
     private void removeSpinner() {
-        if (mSpinner != null && mFindingGameTv != null) {
-            mSpinner.setVisibility(View.GONE);
+        if (mProgressSpinner != null && mFindingGameTv != null) {
+            mProgressSpinner.setVisibility(View.GONE);
             mFindingGameTv.setVisibility(View.GONE);
         }
-        mGridView.setVisibility(View.VISIBLE);
+        mCardsGv.setVisibility(View.VISIBLE);
         mPlayersLayout.setVisibility(View.VISIBLE);
     }
 
@@ -135,14 +133,11 @@ public class Multiplayer extends AbstractSetActivity {
         mApi.getGames(new Callback<Games>() {
             @Override
             public void success(Games games, Response response) {
-                System.out.println("Success getting games " + games.getGames());
                 if (games.getGames().isEmpty()) {
-                    System.out.println("Adding mGame and setting id");
                     addGameAndPlayer();
                 } else {
                     for (Game game : games.getGames()) {
                         if (game.isOpen() && !game.isStarted()) {
-                            System.out.println("open and not started setting mGame id to " + game.getId());
                             mGameId = game.getId();
                             break;
                         }
@@ -156,13 +151,12 @@ public class Multiplayer extends AbstractSetActivity {
                     mApi.addPlayer(mGameId, ActivityUtils.getUsername(Multiplayer.this), new Callback<Response>() {
                         @Override
                         public void success(Response response, Response response2) {
-                            System.out.println("Success adding player");
                             mSocket.emit("update", mGameId);
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-                            System.out.println("Failure adding player " + error.getMessage());
+                            Log.e(Constants.TAG, "Failure adding player to game: " + error.getMessage());
                         }
                     });
                 }
@@ -170,7 +164,7 @@ public class Multiplayer extends AbstractSetActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                System.out.println("failure getting games" + error.getMessage());
+                Log.e(Constants.TAG, "Failure getting games: " + error.getMessage());
             }
         });
 
@@ -180,19 +174,18 @@ public class Multiplayer extends AbstractSetActivity {
         mApi.addGame(new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
-                String resp = getResponseStr(response);
+                String resp = ActivityUtils.getResponseStr(response);
                 mGameId = resp.substring(1, resp.length() - 1);
 
                 mApi.addPlayer(mGameId, ActivityUtils.getUsername(Multiplayer.this), new Callback<Response>() {
                     @Override
                     public void success(Response response, Response response2) {
-                        System.out.println("Success adding player");
                         updateContentFromServer();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        System.out.println("Failure adding player " + error.getMessage());
+                        Log.e(Constants.TAG, "Failure adding player to game: " + error.getMessage());
                     }
                 });
 
@@ -200,7 +193,7 @@ public class Multiplayer extends AbstractSetActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                System.out.println("fail adding mGame here");
+                Log.e(Constants.TAG, "Failure adding game: " + error.getMessage());
             }
         });
     }
@@ -217,17 +210,16 @@ public class Multiplayer extends AbstractSetActivity {
         mSocket.connect(new IOCallback() {
             @Override
             public void onMessage(JsonElement json, IOAcknowledge ack) {
-                System.out.println("Server said:" + json.toString());
+                // Nothing
             }
 
             @Override
             public void onMessage(String data, IOAcknowledge ack) {
-                System.out.println("Server said: " + data);
+                // Nothing
             }
 
             @Override
             public void on(String event, IOAcknowledge ack, JsonElement... args) {
-                System.out.println("Server triggered event '" + event + " with args " + args.toString());
                 if (event.equalsIgnoreCase("update")) {
                     updateContentFromServer();
                 }
@@ -235,51 +227,19 @@ public class Multiplayer extends AbstractSetActivity {
 
             @Override
             public void onError(SocketIOException socketIOException) {
-                System.out.println("an Error occured");
-                socketIOException.printStackTrace();
+                Log.e(Constants.TAG, "Received error from socket: " + socketIOException.getMessage());
             }
 
             @Override
             public void onDisconnect() {
-                System.out.println("Connection terminated.");
+                Log.v(Constants.TAG, "Socket connection terminated.");
             }
 
             @Override
             public void onConnect() {
-                System.out.println("Connection established");
+                Log.v(Constants.TAG, "Socket connection established.");
             }
         });
-    }
-
-    private String getResponseStr(Response result) {
-        BufferedReader reader = null;
-        StringBuilder sb = new StringBuilder();
-        try {
-
-            reader = new BufferedReader(new InputStreamReader(result.getBody().in()));
-
-            String line;
-
-            try {
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return sb.toString();
     }
 
     private void initApi() {
@@ -328,29 +288,26 @@ public class Multiplayer extends AbstractSetActivity {
         mApi.sendSet(mGameId, in, new Callback<Response>() {
             @Override
             public void success(Response result, Response response) {
-                String str = getResponseStr(result);
+                String str = ActivityUtils.getResponseStr(result);
                 Toast.makeText(Multiplayer.this, str, Toast.LENGTH_SHORT).show();
                 if (str.equalsIgnoreCase("\"Set!\"")) {
                     mApi.incrementScore(mGameId, ActivityUtils.getUsername(Multiplayer.this), new Callback<Response>() {
                         @Override
                         public void success(Response response, Response response2) {
-                            System.out.println("Success incrementing score");
                             mSocket.emit("update", mGameId);
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-                            System.out.println("failure incrementing score " + error.getMessage());
+                            Log.e(Constants.TAG, "Failure incrementing score " + error.getMessage());
                         }
                     });
-                } else {
-                    System.out.println("str is actually " + str);
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                System.out.println("Failure sending set: " + error.getMessage());
+                Log.e(Constants.TAG, "Failure sending set: " + error.getMessage());
             }
         });
 
@@ -365,14 +322,13 @@ public class Multiplayer extends AbstractSetActivity {
         mApi.removePlayer(mGameId, ActivityUtils.getUsername(this), new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
-                System.out.println("Success removing player");
                 mSocket.emit("update", mGameId);
                 mSocket.disconnect();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                System.out.println("Failure removing player");
+                Log.e(Constants.TAG, "Failure removing player");
                 mSocket.disconnect();
             }
         });
@@ -409,12 +365,12 @@ public class Multiplayer extends AbstractSetActivity {
         mApi.removeGame(mGameId, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
-                System.out.println("success removing game");
+                Log.v(Constants.TAG, "Successfully removed game from server");
             }
 
             @Override
             public void failure(RetrofitError error) {
-                System.out.println("failure removing game");
+                Log.e(Constants.TAG, "Failure removing game from server: " + error.getMessage());
             }
         });
         Intent gameOver = new Intent(getApplicationContext(),

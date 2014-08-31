@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
@@ -64,24 +66,26 @@ public class PracticeOver extends Activity implements View.OnClickListener {
             Editor edit = prefs.edit();
             edit.putInt(Constants.Keys.PRACTICE_HIGH_SCORE + String.valueOf(mTime), numSets);
             edit.commit();
-            gameOverView.setText("HIGH SCORE");
-            SetApi.INSTANCE.insertPracticeEntry(TimeUnit.MILLISECONDS.toMinutes(mTime), ActivityUtils.getUsername(this), numSets, new Callback<Response>() {
-                @Override
-                public void success(Response response, Response response2) {
-                    System.out.println("success submitting score");
-                }
+            gameOverView.setText(getString(R.string.practice_over_high_score));
+            if (ActivityUtils.checkOnline(this, getString(R.string.practice_over_not_online_leaderboard_submit))) {
+                SetApi.INSTANCE.insertPracticeEntry(TimeUnit.MILLISECONDS.toMinutes(mTime), ActivityUtils.getUsername(this), numSets, new Callback<Response>() {
+                    @Override
+                    public void success(Response response, Response response2) {
+                        Toast.makeText(PracticeOver.this, getString(R.string.practice_over_leaderboard_submit_success), Toast.LENGTH_SHORT).show();
+                    }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    System.out.println("failure submitting score");
-                }
-            });
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(Constants.TAG, "Failure submitting to leaderboard " + error.getMessage());
+                    }
+                });
+            }
         }
-        numSetsView.setText("Sets " + (int) numSets);
-        numBadSetsView.setText("Misses " + (int) numMisses);
-        setsPerMinView.setText("Sets Per Minute " + setsPerMin);
-        scoreView.setText("Score " + Math.round(score));
-        accuracyView.setText("Accuracy " + Math.round(accuracy * 100) + "%");
+        numSetsView.setText(getString(R.string.practice_over_num_sets) + (int) numSets);
+        numBadSetsView.setText(getString(R.string.practice_over_num_misses) + (int) numMisses);
+        setsPerMinView.setText(getString(R.string.practice_over_sets_per_min) + setsPerMin);
+        scoreView.setText(getString(R.string.practice_over_score) + Math.round(score));
+        accuracyView.setText(getString(R.string.practice_over_accuracy) + Math.round(accuracy * 100) + "%");
         findViewById(R.id.restart).setOnClickListener(this);
         findViewById(R.id.home).setOnClickListener(this);
         findViewById(R.id.leaderboard).setOnClickListener(this);

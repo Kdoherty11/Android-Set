@@ -10,16 +10,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.kdoherty.set.Constants;
 import com.kdoherty.set.R;
-import com.kdoherty.set.activities.practice.PracticeOver;
 import com.kdoherty.set.activities.practice.PracticeSetUp;
 import com.kdoherty.set.activities.race.RaceSetUp;
 import com.kdoherty.set.adapters.HomeGridAdapter;
 
 public class HomeScreen extends Activity {
 
-    public static int SCREEN_WIDTH;
     public static int SCREEN_HEIGHT;
 
     @Override
@@ -29,8 +26,6 @@ public class HomeScreen extends Activity {
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        SCREEN_WIDTH= metrics.widthPixels;
         SCREEN_HEIGHT = metrics.heightPixels;
 
         String [] captions = {"Multiplayer", "Practice", "Race", "Log Out"};
@@ -55,11 +50,7 @@ public class HomeScreen extends Activity {
                         startIntent(RaceSetUp.class);
                         break;
                     case 3:
-                        Intent practiceOver = new Intent(getApplicationContext(), PracticeOver.class);
-                        practiceOver.putExtra(Constants.Keys.TIME, 60000l);
-                        practiceOver.putExtra(Constants.Keys.USER_SCORE, 5);
-                        practiceOver.putExtra(Constants.Keys.USER_WRONG, 2);
-                        startActivity(practiceOver);
+                        startIntent(Login.class);
                         break;
                     default:
                         throw new IllegalStateException("Should not get to default case");

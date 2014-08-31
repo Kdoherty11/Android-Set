@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/edittext_top_bg"
                 android:drawableLeft="@drawable/user"
-                android:hint="Email"
+                android:hint="User name"
                 android:imeOptions="actionNext"
                 android:padding="10dp"
                 android:singleLine="true"

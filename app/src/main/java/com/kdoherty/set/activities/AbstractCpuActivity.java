@@ -24,19 +24,19 @@ import java.util.ArrayList;
  */
 public abstract class AbstractCpuActivity extends AbstractSetActivity {
 
-    protected TextView mCpuScoreView;
+    protected TextView mCpuScoreTv;
     protected int mCpuScore = 0;
     protected int mCpuDifficulty;
     protected BroadcastReceiver mReceiver;
     protected boolean mCanAddToSet = true;
     /** Keeps track of the number of Sets the user has found */
-    protected TextView score;
+    protected TextView mScoreTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCpuDifficulty = getIntent().getExtras().getInt(Constants.Keys.CPU_DIFFICULTY);
-        score = (TextView) findViewById(R.id.score);
+        mScoreTv = (TextView) findViewById(R.id.score);
         initGameView(new Game());
         initCpuPlayer();
     }
@@ -44,7 +44,7 @@ public abstract class AbstractCpuActivity extends AbstractSetActivity {
     protected void onCreate(Bundle savedInstanceState, int layoutId, int bgColor) {
         super.onCreate(savedInstanceState, layoutId, bgColor);
         mCpuDifficulty = getIntent().getExtras().getInt(Constants.Keys.CPU_DIFFICULTY);
-        score = (TextView) findViewById(R.id.score);
+        mScoreTv = (TextView) findViewById(R.id.score);
         initGameView(new Game());
         initCpuPlayer();
     }
@@ -73,7 +73,7 @@ public abstract class AbstractCpuActivity extends AbstractSetActivity {
             unhighlightAll();
             for (Card card : set) {
                 try {
-                    mHighlight.add(mAdapter.getCardView(mGridView, ImageAdapter
+                    mHighlight.add(mCardAdapter.getCardView(mCardsGv, ImageAdapter
                             .getCardImages().get(card)));
                 } catch (RuntimeException e) {
                     throw new RuntimeException("Could not get id of " + card + " from " + mGame.getActiveCards());
@@ -132,9 +132,9 @@ public abstract class AbstractCpuActivity extends AbstractSetActivity {
     }
 
     protected void updateScore() {
-        score.setText("Score: " + mSetCount);
-        if (mCpuScoreView != null) {
-            mCpuScoreView.setText("Computer: " + mCpuScore);
+        mScoreTv.setText("Score: " + mSetCount);
+        if (mCpuScoreTv != null) {
+            mCpuScoreTv.setText("Computer: " + mCpuScore);
         }
     }
 

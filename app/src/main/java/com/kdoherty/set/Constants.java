@@ -5,6 +5,8 @@ package com.kdoherty.set;
  */
 public final class Constants {
 
+    public static final String TAG = "com.kdoherty.set.LogTag";
+
     public static final class Keys {
         public static final String SPF_LOGIN = "prefsloginExtra";
         public static final String SPF_HIGHSCORE = "prefsHighScoresExtra";
@@ -39,7 +41,7 @@ public final class Constants {
         public static final int EASY = 250;
         public static final int MEDIUM = 200;
         public static final int HARD = 150;
-        public static final int INSANE = 90;
+        public static final int INSANE = 75;
     }
 
     public static final class Modes {

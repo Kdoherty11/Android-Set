@@ -18,6 +18,7 @@
         android:listSelector="@drawable/list_selector"
         android:numColumns="3"
         android:stretchMode="spacingWidthUniform"
+        android:paddingBottom="25dp"
         android:verticalSpacing="10dp" >
     </GridView>
 

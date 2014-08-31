@@ -74,9 +74,17 @@ public interface SetApi {
 
     @FormUrlEncoded
     @POST("/leaderboards/practice/{key}")
-    public void insertPracticeEntry(@Path("key") long time, @Field("name") String name, @Field("score") int score, Callback<Response> response);
+    public void insertPracticeEntry(@Path("key") long time, @Field("name") String name, @Field("mScoreTv") int score, Callback<Response> response);
 
     @FormUrlEncoded
     @POST("/leaderboards/race/{key}")
-    public void insertRaceEntry(@Path("key") int target, @Field("name") String name, @Field("score") long time, Callback<Response> response);
+    public void insertRaceEntry(@Path("key") int target, @Field("name") String name, @Field("mScoreTv") long time, Callback<Response> response);
+
+    @FormUrlEncoded
+    @POST("/users")
+    public void addUser(@Field("username") String username, @Field("password") String password, Callback<Response> response);
+
+    @FormUrlEncoded
+    @POST("/users/auth")
+    public void authUser(@Field("username") String username, @Field("password") String password, Callback<Boolean> response);
 }

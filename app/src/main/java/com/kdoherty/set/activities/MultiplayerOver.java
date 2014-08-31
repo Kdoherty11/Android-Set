@@ -21,33 +21,33 @@ import java.util.Map;
 
 public class MultiplayerOver extends Activity {
 
-    List<Player> players;
-    Map<String, String> results = new HashMap<>();
+    List<Player> mPlayers;
+    Map<String, String> mResults = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer_over);
-        players = getIntent().getExtras().getParcelableArrayList(Constants.Keys.PLAYERS);
+        mPlayers = getIntent().getExtras().getParcelableArrayList(Constants.Keys.PLAYERS);
         initResults();
-        String resultTxt = results.get(ActivityUtils.getUsername(this));
+        String resultTxt = mResults.get(ActivityUtils.getUsername(this));
         ((TextView) findViewById(R.id.result)).setText(resultTxt);
         initScoreboard();
     }
 
     private void initResults() {
-        Collections.sort(players);
+        Collections.sort(mPlayers);
         String [] places = {"1st", "2nd", "3rd", "4th"};
         int placesIndex = 0;
         int offset = 0;
-        int playersSize = players.size();
+        int playersSize = mPlayers.size();
         for (int i = 0; i < playersSize - offset; i++) {
-            Player player = players.get(i);
+            Player player = mPlayers.get(i);
             int score = player.getSetCount();
             String name = player.getName();
-            results.put(name, places[placesIndex]);
-            while (i + 1 < players.size() && players.get(i + 1).getSetCount() == score) {
-                results.put(players.get(++i).getName(), places[placesIndex]);
+            mResults.put(name, places[placesIndex]);
+            while (i + 1 < mPlayers.size() && mPlayers.get(i + 1).getSetCount() == score) {
+                mResults.put(mPlayers.get(++i).getName(), places[placesIndex]);
                 offset++;
             }
             placesIndex++;
@@ -56,13 +56,13 @@ public class MultiplayerOver extends Activity {
 
     private void initScoreboard() {
         LinearLayout scoreboard = (LinearLayout) findViewById(R.id.scoreboard);
-        for (Player player : players) {
+        for (Player player : mPlayers) {
             TextView playerView = new TextView(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             playerView.setLayoutParams(params);
             String name = player.getName();
-            playerView.setText(results.get(name).charAt(0) + ". " + name + " " +
+            playerView.setText(mResults.get(name).charAt(0) + ". " + name + " " +
                     player.getSetCount());
             playerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
             scoreboard.addView(playerView);

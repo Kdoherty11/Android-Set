@@ -9,6 +9,12 @@ import android.widget.Toast;
 import com.google.common.base.Strings;
 import com.kdoherty.set.Constants;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import retrofit.client.Response;
+
 /**
  * Created by kdoherty on 8/20/14.
  */
@@ -49,7 +55,7 @@ public class ActivityUtils {
     public static boolean checkOnline(Context context, String message) {
         boolean isOnline = isOnline(context);
         if (!isOnline) {
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
         return isOnline;
     }
@@ -67,5 +73,36 @@ public class ActivityUtils {
             default:
                 throw new IllegalStateException("Illegal option selected " + option);
         }
+    }
+
+    public static String getResponseStr(Response result) {
+        BufferedReader reader = null;
+        StringBuilder sb = new StringBuilder();
+        try {
+
+            reader = new BufferedReader(new InputStreamReader(result.getBody().in()));
+
+            String line;
+
+            try {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return sb.toString();
     }
 }
